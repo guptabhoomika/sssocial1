@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "18150117603",
+    "firebase_url": "https://android-1586361478928.firebaseio.com",
+    "project_id": "android-1586361478928",
+    "storage_bucket": "android-1586361478928.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18150117603:android:19c3e4d405734eee6d75d6",
+        "android_client_info": {
+          "package_name": "com.socialscrap.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "18150117603-8307ssdmqdts9ocqsvdp7q5ujf85sdmb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.socialscrap.com",
+            "certificate_hash": "19084d21bb5400a4a3e3d22b1a2df5cf25821012"
+          }
+        },
+        {
+          "client_id": "18150117603-k8l9e3lds6qt00ej456kkarkbbs173mj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwjGEtnZzgyeeVZU4vhu04YUBW1hCddyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "18150117603-k8l9e3lds6qt00ej456kkarkbbs173mj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

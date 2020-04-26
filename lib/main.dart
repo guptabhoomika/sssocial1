@@ -12,7 +12,8 @@ import 'package:sssocial/pages/home.dart';
 
 void main(){
  runApp(new MaterialApp(
-   home:new Myapp()
+   home:new Myapp(),
+   
  ));
 }
 class Myapp extends StatefulWidget{

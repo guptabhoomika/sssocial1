@@ -1,15 +1,21 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:http/http.dart' as http;
 import 'package:http/http.dart' as http;
+import 'package:sssocial/pages/ActivityFeed.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:sssocial/pages/home.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sssocial/pages/search.dart';
+import 'package:sssocial/pages/upload.dart';
+import 'package:sssocial/pages/userprofile.dart';
 // import fit_image;
-
+import 'timeline.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -28,13 +34,16 @@ _HomeState createState() =>  _HomeState();
 // }
 
 class _HomeState extends State<Home>{
-bool isAuth =false;
+bool isAuth =true;
 String token ='';
 String value='';
 String gtoken='';
+PageController _pageController;
+int pageIndex = 0;
 @override
 void initState(){
 super.initState();
+_pageController = PageController();
 googlesignin.onCurrentUserChanged.listen((account){
 if (account != null){
   print("user signed in ");
@@ -69,6 +78,13 @@ else{
 }
 });
 }
+@override
+void dispose()
+ {
+   _pageController.dispose();
+   super.dispose();
+
+ }
  login()  {
   googlesignin.signIn().then((result){
         result.authentication.then((googleKey) async {
@@ -104,6 +120,7 @@ else{
           });
   });
 }
+
 logout(){
     googlesignin.signOut();
 
@@ -113,11 +130,54 @@ logout(){
 
     
 }
-Widget buildAuthScreen(){
-return RaisedButton(
-  child: Text("Logout") ,
-  onPressed: logout
-); 
+onPageCahnged(int index)
+{
+  setState(() {
+    pageIndex = index;
+  });
+}
+ontap(int index)
+{
+  _pageController.animateToPage(
+    index,
+    duration: Duration(microseconds: 500),
+    curve: Curves.easeInOut
+    );
+}
+Scaffold buildAuthScreen(){
+  return Scaffold(
+      body: PageView(
+        children: <Widget>[
+          TimeLine(),
+          ActivityFeed(),
+          Upload(),
+          Search(),
+          UserProfile()
+
+
+        ],
+        controller: _pageController,
+        onPageChanged: onPageCahnged,
+        physics: NeverScrollableScrollPhysics(),
+        
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        currentIndex: pageIndex,
+        onTap: ontap,
+        activeColor: Theme.of(context).primaryColor,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.whatshot)),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications_active)),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_camera,size:35.0)),
+          BottomNavigationBarItem(icon: Icon(Icons.search)),
+          BottomNavigationBarItem(icon: Icon(Icons.account_circle)),
+        ],
+      ),
+  );
+// return RaisedButton(
+//   child: Text("Logout") ,
+//   onPressed: logout
+// ); 
 }
  Scaffold buildUnAuthScreen(){
  return Scaffold(

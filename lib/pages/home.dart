@@ -34,7 +34,7 @@ _HomeState createState() =>  _HomeState();
 // }
 
 class _HomeState extends State<Home>{
-bool isAuth =true;
+bool isAuth =false;
 String token ='';
 String value='';
 String gtoken='';
@@ -140,7 +140,7 @@ ontap(int index)
 {
   _pageController.animateToPage(
     index,
-    duration: Duration(microseconds: 500),
+    duration: Duration(milliseconds: 300),
     curve: Curves.easeInOut
     );
 }

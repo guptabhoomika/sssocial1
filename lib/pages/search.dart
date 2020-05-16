@@ -12,14 +12,16 @@ class _SearchState extends State<Search> {
  List users;
   getData() async{
     http.Response _response = await http.get("https://backend.scrapshut.com/user/all/?format=json");
+    print("Search pg");
+    print(_response.body);
     setState(() {
       
       data = jsonDecode(_response.body);
       users = data['results'];
     });
-    print(data);
-    print(data['count']);
-    print(users);
+    // print(data);
+    // print(data['count']);
+    // print(users);
 
   }
   TextEditingController _textEditingController;

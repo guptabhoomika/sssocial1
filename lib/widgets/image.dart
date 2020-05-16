@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
  Map<String,dynamic> _data;
+
   List<dynamic> _results;
+
+  bool havData = false;
 
 class Images extends StatefulWidget {
  
@@ -30,7 +33,9 @@ class _ImagesState extends State<Images> {
     print(_results);
     print(_results[0]["picture"]);
     print(_results.length);
-    
+    setState(() {
+      havData = true;
+    });
     //setting is fetching false to display data
     return "Success";
   }
@@ -43,7 +48,8 @@ class _ImagesState extends State<Images> {
   }
   @override
   Widget build(BuildContext context) {
-   return  StaggeredGridView.countBuilder(
+   return  havData == false ? Center(child: CircularProgressIndicator()) :
+   StaggeredGridView.countBuilder(
   crossAxisCount: 4,
   itemCount: _results.length,
   itemBuilder: (BuildContext context, int index) => Tile(_results[index]["picture"]),

@@ -113,13 +113,13 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
 
      isFetchingmsg == true ? Center(child: CircularProgressIndicator(),) :
       ListView.builder(
-        itemCount: _results.length,
+        itemCount: _msgresults.length,
         itemBuilder: (context,index){
           return display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true);
         },
       ),
      //get the images detais from images file in widgets
-      Images(),
+      Images(pg: 0,),
         ],
         
       )

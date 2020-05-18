@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:sssocial/pages/home.dart';
  Map<String,dynamic> _data;
 
   List<dynamic> _results;
@@ -11,6 +12,8 @@ import 'package:http/http.dart' as http;
   bool havData = false;
 
 class Images extends StatefulWidget {
+  final int pg;
+  Images({this.pg});
  
 
 
@@ -39,11 +42,43 @@ class _ImagesState extends State<Images> {
     //setting is fetching false to display data
     return "Success";
   }
+   _getResponseImg() async{
+    String bvalue = await storage.read(key: 'btoken');
+    Map<String, String> headers = {"Authorization":"JWT $bvalue",
+          "Content-Type":"application/json"};
+          String url = "https://backend.scrapshut.com/user/img/";
+    http.Response response = await http.get(url,headers: headers);
+    print("img");
+     print(response.statusCode);
+     print(response.body);
+     _data =  jsonDecode(response.body);
+    print(_data);
+    setState(() {
+      _results = _data['results'];
+    });
+    
+    print(_results);
+    print(_results[0]["picture"]);
+    print(_results.length);
+    setState(() {
+      havData = true;
+    });
+   
+  }
+
 
   @override
   void initState() {
     // TODO: implement initState
-    _getResponse();
+    if(widget.pg==1)
+    {
+      _getResponseImg();
+    }
+    else if(widget.pg ==0)
+    {
+      _getResponse();
+    }
+    
     super.initState();
   }
   @override

@@ -8,6 +8,7 @@ import 'package:sssocial/pages/home.dart';
  Map<String,dynamic> _data;
 
   List<dynamic> _results;
+  List<dynamic> imgitems = List<dynamic>();
 
   bool havData = false;
 
@@ -22,6 +23,8 @@ class Images extends StatefulWidget {
 }
 
 class _ImagesState extends State<Images> {
+  int perPageURL  = 10; //count of img shown in one page
+int presentURL = 5; //indexing start from 10
  
     Future<String> _getResponse() async //url get request
   {
@@ -36,6 +39,9 @@ class _ImagesState extends State<Images> {
     print(_results);
     print(_results[0]["picture"]);
     print(_results.length);
+    setState(() {
+      imgitems.addAll(_results.getRange(0, 5));
+    });
     setState(() {
       havData = true;
     });
@@ -74,7 +80,7 @@ class _ImagesState extends State<Images> {
     {
       _getResponseImg();
     }
-    else if(widget.pg ==0)
+    else if(widget.pg ==0 )
     {
       _getResponse();
     }
@@ -83,11 +89,34 @@ class _ImagesState extends State<Images> {
   }
   @override
   Widget build(BuildContext context) {
-   return  havData == false ? Center(child: CircularProgressIndicator()) :
+   return  havData == false ? 
+   Center(child: CircularProgressIndicator()) :
    StaggeredGridView.countBuilder(
   crossAxisCount: 4,
-  itemCount: _results.length,
-  itemBuilder: (BuildContext context, int index) => Tile(_results[index]["picture"]),
+  itemCount: (presentURL <= _results.length) ? imgitems.length + 1 : imgitems.length,
+  itemBuilder: (BuildContext context, int index) => 
+   (index == imgitems.length ) ?
+          //for load more button
+      
+             FlatButton(
+                child: Text("Load More"),
+                //color: Colors.green,
+                onPressed: () {
+                  setState(() {
+    if((presentURL + perPageURL)> _results.length) {
+        imgitems.addAll(
+            _results.getRange(presentURL, _results.length));
+    } else {
+        imgitems.addAll(
+            _results.getRange(presentURL, presentURL + perPageURL));
+    }
+    presentURL = presentURL + perPageURL;
+});
+
+                },
+            
+        ) :
+  Tile(_results[index]["picture"]),
  
   staggeredTileBuilder: (int index) =>
       new StaggeredTile.count(2,  index.isEven ? 4 : 3),

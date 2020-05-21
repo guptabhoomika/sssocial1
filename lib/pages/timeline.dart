@@ -94,7 +94,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       appBar: AppBar( 
         title: Text(
   
-      "ScrapShut" ,
+      "Wiringbridge" ,
     style: TextStyle(
       color: Colors.white,
        fontFamily: "Signatra" ,
@@ -186,7 +186,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
         },
       ),
      //get the images detais from images file in widgets
-      Images(pg: 0,),
+      Images(),
         ],
         
       )

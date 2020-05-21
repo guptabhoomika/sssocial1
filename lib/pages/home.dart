@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:http/http.dart' as http;
 import 'package:http/http.dart' as http;
@@ -44,39 +45,7 @@ int pageIndex = 0;
 void initState(){
 super.initState();
 _pageController = PageController();
-googlesignin.onCurrentUserChanged.listen((account){
-if (account != null){
-  print("user signed in ");
-  setState(() {
-    
-    isAuth=true;
-  });
-}
-else{
-  setState(() {
-    
-    isAuth=false;
-  });
-}
-},onError:(err){
-  print("eror signing in $err");
-});
-googlesignin.signInSilently(suppressErrors:false)
-.then((account){
-  if (account != null){
-  print("user signed in with mounikesh");
-  setState(() {
-    
-    isAuth=true;
-  });
-}
-else{
-  setState(() {
-    
-    isAuth=false;
-  });
-}
-});
+
 }
 @override
 void dispose()
@@ -105,6 +74,9 @@ void dispose()
 
           );
  if(response.statusCode == 200) {
+    setState(() {
+     isAuth = true;
+   });
       String responseBody = response.body;
       print(responseBody);
      Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -117,18 +89,20 @@ void dispose()
    else{
      print("not success");
    } 
+  
           });
   });
 }
 
-logout(){
-    googlesignin.signOut();
-
-   storage.delete(key: 'btoken');
-   storage.delete(key: 'token');
-
-
-    
+Future logout() async {
+    try {
+      //await _fireBaseAuthInstance.signOut();
+      await  googlesignin.disconnect();
+      await googlesignin.signOut();
+    } catch (e) {
+      print('Failed to signOut' + e.toString());
+    }
+   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
 }
 onPageCahnged(int index)
 {
@@ -149,9 +123,9 @@ Scaffold buildAuthScreen(){
       body: PageView(
         children: <Widget>[
           TimeLine(),
-          ActivityFeed(),
-          Upload(),
-          Search(),
+          // ActivityFeed(),
+          // Upload(),
+          // Search(),
           UserProfile()
 
 
@@ -167,9 +141,9 @@ Scaffold buildAuthScreen(){
         activeColor: Theme.of(context).primaryColor,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.whatshot)),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications_active)),
-          BottomNavigationBarItem(icon: Icon(Icons.photo_camera,size:35.0)),
-          BottomNavigationBarItem(icon: Icon(Icons.search)),
+          // BottomNavigationBarItem(icon: Icon(Icons.notifications_active)),
+          // BottomNavigationBarItem(icon: Icon(Icons.photo_camera,size:35.0)),
+          // BottomNavigationBarItem(icon: Icon(Icons.search)),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle)),
         ],
       ),
@@ -197,20 +171,36 @@ alignment: Alignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
 
     children: <Widget>[
-    Text("Scrapshut",style:TextStyle(
+      Container(
+        height: 200,
+        width: 200,
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/wiringbridge.png",),fit: BoxFit.cover),
+          
+        ),
+
+      ),
+      SizedBox(height: 20,),
+    Text("Wiringbridge",style:TextStyle(
       fontFamily:"Signatra",
        fontSize:40.0,
        color:Colors.lightBlue,
        ),
        ),
-       GestureDetector(
-         onTap: login(),
+       SizedBox(height: 20,),
+       RaisedButton(
+         onPressed:(){
+           print("Tap");
+           login();
+
+         } ,
          child: Container(
-           width:350.0,
+          
            height:60.0,
            decoration:BoxDecoration(
+             color: Colors.red,
              image:DecorationImage(image: AssetImage('assets/images/download.png'),
-             fit : BoxFit.cover,
+             fit : BoxFit.fill,
               ),
            ),   
          ),

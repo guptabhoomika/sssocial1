@@ -5,6 +5,7 @@ import 'package:sssocial/pages/home.dart';
 import 'package:sssocial/widgets/header.dart';
 import 'package:http/http.dart' as http;
 import 'package:sssocial/widgets/image.dart';
+import 'package:sssocial/widgets/imageprof.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -231,7 +232,7 @@ List<dynamic> _results; //stores the list of result of url
       ),
                   //Text("ms"),
                   //corrosponds to images file in widgets folder
-                Images(pg: 1,)
+                    ImagesProf()
                 ],
               ),
             )

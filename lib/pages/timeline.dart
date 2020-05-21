@@ -21,6 +21,12 @@ List<dynamic> _results; //stores the list of result of msg
  
 bool isfetching = true; //to show circular loader while data is being fetched
 bool isFetchingmsg = true;
+int perPageURL  = 10; //count of url shown in one page
+int presentURL = 10; //indexing start from 10
+List<dynamic> urlitems = List<dynamic>(); //temporary list to store url of a page
+int perPagemsg  = 10; //count of msg shown in one page
+int presentmsg = 10; //indexing start from 10
+List<dynamic> msgitems = List<dynamic>(); //temporary list to store umsg of a page
 
 
 
@@ -31,30 +37,39 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
     http.Response _response = await http.get("https://backend.scrapshut.com/api/post/");
     //print(_response.body);
     _data =  jsonDecode(_response.body);
-    print(_data);
+    //print(_data);
     setState(() {
       _results = _data['results'];
     });
-    
-    print(_results);
+    print("url");
+    print(_results.length);
+     //setting is fetching false to display data
     setState(() {
       isfetching = false;
     });
-    //setting is fetching false to display data
+    //adds initial 10 urls to list
+    setState(() {
+      urlitems.addAll(_results.getRange(0, 9));
+    });
+   
   }
   //request for msg part
   _getResponseMsg() async{
     http.Response response = await http.get("https://backend.scrapshut.com/api/msg/");
     _msgdata = jsonDecode(response.body);
     print("message data");
-    print(_msgdata);
+    //rint(_msgdata);
     setState(() {
       _msgresults = _msgdata['results'];
     });
     setState(() {
+      msgitems.addAll(_msgresults.getRange(0, 9));
+    });
+    setState(() {
       isFetchingmsg = false;
     });
-    print(_msgresults);
+    
+    print(_msgresults.length);
   }
   @override
   void initState() {
@@ -63,6 +78,13 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
      _tabController = new TabController(length: 3,initialIndex: 0, vsync: this);
     _getResponse();
     _getResponseMsg();
+
+    
+    
+
+    
+    
+     
     super.initState();
   }
 
@@ -72,7 +94,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       appBar: AppBar( 
         title: Text(
   
-      "ScrapShut" ,
+      "Wiringbridge" ,
     style: TextStyle(
       color: Colors.white,
        fontFamily: "Signatra" ,
@@ -102,24 +124,69 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
         controller: _tabController,
         children: <Widget>[
           //while isfetching is true a circular indicator is shown
-           isfetching==true ? Center(child: CircularProgressIndicator()) :
+           isfetching==true  ? Center(child: CircularProgressIndicator()) :
      //returns the container from the method display that takes the response values as parameters
+     
       ListView.builder(
-        itemCount: _results.length,
+        itemCount: (presentURL <= _results.length) ? urlitems.length + 1 : urlitems.length,
         itemBuilder: (context,index){
-          return display(_results[index]['rate'], _results[index]['author'], _results[index]['url'], _results[index]["created_at"],  _results[index]['content'], _results[index]['tags'],false);
+        
+          return (index == urlitems.length ) ?
+          //for load more button
+        Container(
+            color: Colors.greenAccent,
+            child: FlatButton(
+                child: Text("Load More"),
+                onPressed: () {
+                  setState(() {
+    if((presentURL + perPageURL)> _results.length) {
+        urlitems.addAll(
+            _results.getRange(presentURL, _results.length));
+    } else {
+        urlitems.addAll(
+            _results.getRange(presentURL, presentURL + perPageURL));
+    }
+    presentURL = presentURL + perPageURL;
+});
+
+                },
+            ),
+        ) :
+          display(_results[index]['rate'] ?? 0, _results[index]['author'] ?? "null", _results[index]['url'] ?? "12345678910", _results[index]["created_at"] ,  _results[index]['content'] ?? "nulll", _results[index]['tags'],false);
         },
       ),
 
      isFetchingmsg == true ? Center(child: CircularProgressIndicator(),) :
       ListView.builder(
-        itemCount: _msgresults.length,
+        itemCount:   (presentmsg <= _msgresults.length) ? msgitems.length + 1 : msgitems.length,
         itemBuilder: (context,index){
-          return display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true);
+          
+          return (index == msgitems.length ) ?
+          //for load more button
+        Container(
+            color: Colors.greenAccent,
+            child: FlatButton(
+                child: Text("Load More"),
+                onPressed: () {
+                  setState(() {
+    if((presentmsg + perPagemsg)> _msgresults.length) {
+        msgitems.addAll(
+            _msgresults.getRange(presentmsg, _msgresults.length));
+    } else {
+        msgitems.addAll(
+            _msgresults.getRange(presentmsg, presentmsg + perPagemsg));
+    }
+    presentmsg = presentmsg + perPagemsg;
+});
+
+                },
+            ),
+        ) :
+          display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true);
         },
       ),
      //get the images detais from images file in widgets
-      Images(pg: 0,),
+      Images(),
         ],
         
       )

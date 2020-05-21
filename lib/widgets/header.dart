@@ -3,7 +3,7 @@ AppBar header(context,{bool isAppTitle = false,String titleText}){
   return AppBar(
     title:   Text(
       isAppTitle ?
-      "ScrapShut" : titleText,
+      "Wiringbridge" : titleText,
     style: TextStyle(
       color: Colors.white,
        fontFamily:  isAppTitle ?"Signatra" : "",

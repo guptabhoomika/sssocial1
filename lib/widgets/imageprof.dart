@@ -12,24 +12,29 @@ import 'package:sssocial/pages/home.dart';
 
   bool havData = false;
 
-class Images extends StatefulWidget {
+class ImagesProf extends StatefulWidget {
   
  
 
 
   @override
-  _ImagesState createState() => _ImagesState();
+  _ImagesProfState createState() => _ImagesProfState();
 }
 
-class _ImagesState extends State<Images> {
-  int perPageURL  = 10; //count of img shown in one page
-int presentURL = 5; //indexing start from 10
+class _ImagesProfState extends State<ImagesProf> {
+  
  
-    Future<String> _getResponse() async //url get request
-  {
-    http.Response _response = await http.get("https://backend.scrapshut.com/api/img/");
-    //print(_response.body);
-    _data =  jsonDecode(_response.body);
+    
+   _getResponseImg() async{
+    String bvalue = await storage.read(key: 'btoken');
+    Map<String, String> headers = {"Authorization":"JWT $bvalue",
+          "Content-Type":"application/json"};
+          String url = "https://backend.scrapshut.com/user/img/";
+    http.Response response = await http.get(url,headers: headers);
+    print("img");
+     print(response.statusCode);
+     print(response.body);
+     _data =  jsonDecode(response.body);
     print(_data);
     setState(() {
       _results = _data['results'];
@@ -39,21 +44,18 @@ int presentURL = 5; //indexing start from 10
     print(_results[0]["picture"]);
     print(_results.length);
     setState(() {
-      imgitems.addAll(_results.getRange(0, 5));
-    });
-    setState(() {
       havData = true;
     });
-    //setting is fetching false to display data
-    return "Success";
-  }
    
+  }
+
+
   @override
   void initState() {
     // TODO: implement initState
-    
-    
-      _getResponse();
+  
+      _getResponseImg();
+  
     
     
     super.initState();
@@ -64,29 +66,9 @@ int presentURL = 5; //indexing start from 10
    Center(child: CircularProgressIndicator()) :
    StaggeredGridView.countBuilder(
   crossAxisCount: 4,
-  itemCount: (presentURL <= _results.length) ? imgitems.length + 1 : imgitems.length,
+  itemCount:  _results.length,
   itemBuilder: (BuildContext context, int index) => 
-   (index == imgitems.length ) ?
-          //for load more button
-      
-             FlatButton(
-                child: Text("Load More"),
-                //color: Colors.green,
-                onPressed: () {
-                  setState(() {
-    if((presentURL + perPageURL)> _results.length) {
-        imgitems.addAll(
-            _results.getRange(presentURL, _results.length));
-    } else {
-        imgitems.addAll(
-            _results.getRange(presentURL, presentURL + perPageURL));
-    }
-    presentURL = presentURL + perPageURL;
-});
-
-                },
-            
-        ) :
+  
   Tile(_results[index]["picture"]),
  
   staggeredTileBuilder: (int index) =>

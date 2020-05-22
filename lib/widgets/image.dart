@@ -87,7 +87,7 @@ int presentURL = 5; //indexing start from 10
                 },
             
         ) :
-  Tile(_results[index]["picture"]),
+  Tile(url:_results[index]["picture"],index :index),
  
   staggeredTileBuilder: (int index) =>
       new StaggeredTile.count(2,  index.isEven ? 4 : 3),
@@ -100,12 +100,34 @@ int presentURL = 5; //indexing start from 10
   }
 }
 class Tile extends StatelessWidget {
-  const Tile( this.url);
+  const Tile( {this.url,this.index});
 
   final String url;
+  final int index;
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return index %10 ==0 && index > 0 ?
+    Card(
+        elevation: 4.0,
+            child: Container(
+              color: Colors.greenAccent,
+          height: 120,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Imagine your product or service here.",style: TextStyle(fontWeight: FontWeight.bold),),
+                Text("Target the exact people ",style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+      )
+  
+    :
+
+    Card(
       
       child:  InkWell(
         onTap: () {},

@@ -152,7 +152,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                 },
             ),
         ) :
-          display(_results[index]['rate'] ?? 0, _results[index]['author'] ?? "null", _results[index]['url'] ?? "12345678910", _results[index]["created_at"] ,  _results[index]['content'] ?? "nulll", _results[index]['tags'],false);
+          display(_results[index]['rate'] ?? 0, _results[index]['author'] ?? "null", _results[index]['url'] ?? "12345678910", _results[index]["created_at"] ,  _results[index]['content'] ?? "nulll", _results[index]['tags'],false,index);
         },
       ),
 
@@ -182,7 +182,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                 },
             ),
         ) :
-          display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true);
+          display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true,index);
         },
       ),
      //get the images detais from images file in widgets
@@ -196,11 +196,32 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
   }
 //method for building the ui in response to the api's values
 //isMsg is swt to true to show data in corrospondence to the msg endpoint
-  Container display(int rate,String author,String url,String time,String content,List tags,bool isMsg)
+  Widget display(int rate,String author,String url,String time,String content,List tags,bool isMsg,int index)
   
   {
   String c = time.substring(0,10);
-    return Container(
+    return index%9 == 0  && index>0?
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 2.0,
+            child: Container(
+          height: 120,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Imagine your product or service here.",style: TextStyle(fontWeight: FontWeight.bold),),
+                Text("Target the exact people ",style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    )
+    :
+    Container(
       margin: EdgeInsets.all(8),
       height: 120,
       child: Row(

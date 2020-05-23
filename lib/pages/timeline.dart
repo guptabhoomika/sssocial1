@@ -7,6 +7,8 @@ import 'package:sssocial/widgets/header.dart';
 import 'package:sssocial/widgets/image.dart';
 import 'package:sssocial/widgets/progress.dart';
 import 'package:http/http.dart' as http;
+
+
 class TimeLine extends StatefulWidget {
    
 
@@ -27,6 +29,8 @@ List<dynamic> urlitems = List<dynamic>(); //temporary list to store url of a pag
 int perPagemsg  = 10; //count of msg shown in one page
 int presentmsg = 10; //indexing start from 10
 List<dynamic> msgitems = List<dynamic>(); //temporary list to store umsg of a page
+
+
 
 
 
@@ -87,10 +91,12 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
      
     super.initState();
   }
+  
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    Scaffold(
       appBar: AppBar( 
         title: Text(
   
@@ -120,7 +126,8 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       ],
     ),),
       
-      body : TabBarView(
+      body :
+      TabBarView(
         controller: _tabController,
         children: <Widget>[
           //while isfetching is true a circular indicator is shown
@@ -303,5 +310,14 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       ),
     );
 
+  }
+}
+class Overlay extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.85),
+      
+    );
   }
 }

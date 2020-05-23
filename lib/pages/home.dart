@@ -16,6 +16,7 @@ import 'package:sssocial/pages/search.dart';
 import 'package:sssocial/pages/upload.dart';
 import 'package:sssocial/pages/userprofile.dart';
 // import fit_image;
+
 import 'timeline.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -74,9 +75,7 @@ void dispose()
 
           );
  if(response.statusCode == 200) {
-    setState(() {
-     isAuth = true;
-   });
+   
       String responseBody = response.body;
       print(responseBody);
      Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -85,7 +84,16 @@ void dispose()
       String bvalue = await storage.read(key: 'btoken');
       print(bvalue);
       print("sucess");
+      setState(() {
+        isAuth = true;
+      });
+      //to the full screen dialog
+       Navigator.of(context).push(PageRouteBuilder(
+    opaque: false,
+    pageBuilder: (BuildContext context, _, __) =>
+        SomeDialog()));
     }
+    
    else{
      print("not success");
    } 
@@ -112,6 +120,9 @@ onPageCahnged(int index)
 }
 ontap(int index)
 {
+  print("f1");
+ 
+    print("f2");
   _pageController.animateToPage(
     index,
     duration: Duration(milliseconds: 300),
@@ -119,7 +130,8 @@ ontap(int index)
     );
 }
 Scaffold buildAuthScreen(){
-  return Scaffold(
+  return 
+  Scaffold(
       body: PageView(
         children: <Widget>[
           TimeLine(),
@@ -133,6 +145,7 @@ Scaffold buildAuthScreen(){
         controller: _pageController,
         onPageChanged: onPageCahnged,
         physics: NeverScrollableScrollPhysics(),
+        
         
       ),
       bottomNavigationBar: CupertinoTabBar(
@@ -153,6 +166,7 @@ Scaffold buildAuthScreen(){
 //   onPressed: logout
 // ); 
 }
+
  Scaffold buildUnAuthScreen(){
  return Scaffold(
 body: Container(
@@ -216,5 +230,18 @@ alignment: Alignment.center,
   Widget  build(BuildContext context){
     // return Text("home");
     return isAuth ? buildAuthScreen() : buildUnAuthScreen();
+  }
+}
+class SomeDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.75),
+      appBar: AppBar(
+        backgroundColor: Colors.black.withOpacity(0.75) ,
+      ),
+      
+      body: Center(child: new Text("It's a Dialog!",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),)),
+    );
   }
 }

@@ -36,7 +36,7 @@ _HomeState createState() =>  _HomeState();
 // }
 
 class _HomeState extends State<Home>{
-bool isAuth =false;
+bool isAuth =true;
 String token ='';
 String value='';
 String gtoken='';
@@ -72,8 +72,10 @@ void dispose()
           var response = await http.post(auth ,body:msg,
 
           headers: headers
+          
 
           );
+          print(response.statusCode);
  if(response.statusCode == 200) {
    
       String responseBody = response.body;

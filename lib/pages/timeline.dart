@@ -319,7 +319,28 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
   //     ),
   //   );
 
-   return AnimatedContainer(
+   return index%9 == 0  && index>0?
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 2.0,
+            child: Container(
+          height: 120,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Imagine your product or service here.",style: TextStyle(fontWeight: FontWeight.bold),),
+                Text("Target the exact people ",style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    )
+    :
+    AnimatedContainer(
     
       
      //height:  isexp ? 300 : 200,
@@ -377,7 +398,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Flexible(child: Text(url,style: TextStyle(color: Colors.blue,fontSize: 20),)),
-                    Column(children: <Widget>[
+                    Row(children: <Widget>[
                       Text(rate.toString(),style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
                       SizedBox(height: 5,),
                       Icon(Icons.star,color: Colors.red,size: 25,),
@@ -388,7 +409,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
               ),
             ),
           ),
-          SizedBox(height: 20,),
+          SizedBox(height: 30,),
           // Padding(
           //   padding: const EdgeInsets.all(10.0),
           //   child: Container(

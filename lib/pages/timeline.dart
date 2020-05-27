@@ -1,12 +1,15 @@
 import 'dart:convert';
 
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sssocial/widgets/header.dart';
 import 'package:sssocial/widgets/image.dart';
 import 'package:sssocial/widgets/progress.dart';
 import 'package:http/http.dart' as http;
+
+
 class TimeLine extends StatefulWidget {
    
 
@@ -27,13 +30,23 @@ List<dynamic> urlitems = List<dynamic>(); //temporary list to store url of a pag
 int perPagemsg  = 10; //count of msg shown in one page
 int presentmsg = 10; //indexing start from 10
 List<dynamic> msgitems = List<dynamic>(); //temporary list to store umsg of a page
+bool isexp = false;
+
+
 
 
 
 class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixin{
+  isopen(bool state)
+  {
+    setState(() {
+      isexp= state;
+    });
+  }
   //url get request
   _getResponse() async //url get request
   {
+    
     http.Response _response = await http.get("https://backend.scrapshut.com/api/post/");
     //print(_response.body);
     _data =  jsonDecode(_response.body);
@@ -87,10 +100,12 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
      
     super.initState();
   }
+  
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    Scaffold(
       appBar: AppBar( 
         title: Text(
   
@@ -120,7 +135,8 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       ],
     ),),
       
-      body : TabBarView(
+      body :
+      TabBarView(
         controller: _tabController,
         children: <Widget>[
           //while isfetching is true a circular indicator is shown
@@ -199,8 +215,111 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
   Widget display(int rate,String author,String url,String time,String content,List tags,bool isMsg,int index)
   
   {
-  String c = time.substring(0,10);
-    return index%9 == 0  && index>0?
+  // String c = time.substring(0,10);
+  //   return index%9 == 0  && index>0?
+  //   Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Card(
+  //       elevation: 2.0,
+  //           child: Container(
+  //         height: 120,
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: <Widget>[
+  //               Text("Imagine your product or service here.",style: TextStyle(fontWeight: FontWeight.bold),),
+  //               Text("Target the exact people ",style: TextStyle(fontWeight: FontWeight.bold)),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   )
+  //   :
+  //   Container(
+  //     margin: EdgeInsets.all(8),
+  //     height: 120,
+  //     child: Row(
+  //       children: <Widget>[
+  //         Container(
+  //           width: 40,
+  //           color: Colors.grey[300],
+            
+            
+  //           child: Column(
+  //             children: <Widget>[
+  //               Text(""),
+  //               Icon(Icons.arrow_upward,),
+  //               SizedBox(height: 5,),
+  //               Text(rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+  //               SizedBox(height: 5,),
+  //               Icon(Icons.arrow_downward)
+  //             ],
+  //           ),
+            
+  //         ),
+  //         SizedBox(width: 10,),
+  //         Container(
+  //          child: Column(
+  //            crossAxisAlignment: CrossAxisAlignment.start,
+  //            children: <Widget>[
+  //              Row(
+  //                children: <Widget>[
+  //                  Icon(Icons.blur_circular,color: Colors.blue,),
+  //                  Text("r/news ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
+  //                  Text("Posted by u/",style: TextStyle(color: Colors.grey,fontSize: 10),),
+  //                  Text(author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
+  //                  Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
+                   
+                   
+              
+                  
+  //                  //Spacer(),
+  //                ],
+  //              ),
+  //              SizedBox(height: 10,),
+  //              Text(content,style: TextStyle(fontWeight: FontWeight.bold),),
+  //                 SizedBox(height: 5,),
+  //                tags.isNotEmpty ?  Text( "Tags: "+ tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.grey,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
+  //              SizedBox(height: 5,),
+              
+               
+  //              Row(
+  //                children: <Widget>[
+  //                 Text( isMsg==true ? url : url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: isMsg? 15 : 10 ),),
+  //                isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
+
+  //              ],),
+              
+  //              Spacer(),
+  //              Row(
+  //                children: <Widget>[
+  //                  Icon(Icons.message,color: Colors.grey,),
+  //                  SizedBox(width: 5,),
+  //                  Text("Comments",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+  //                  SizedBox(width: 5,),
+  //                  Icon(Icons.share,color: Colors.grey,),
+  //                  SizedBox(width: 5,),
+  //                  Text("Share",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
+  //                  SizedBox(width: 5,),
+  //                  Icon(Icons.save_alt,color: Colors.grey),
+  //                  SizedBox(width: 5,),
+  //                  Text("Save",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
+  //                  SizedBox(width: 5,),
+  //                  Text("...",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold))
+  //                ],
+  //              )
+
+  //            ],
+
+  //           )
+  //         )
+  //       ],
+  //     ),
+  //   );
+
+   return index%9 == 0  && index>0?
     Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -221,87 +340,179 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       ),
     )
     :
+    AnimatedContainer(
+    
+      
+     //height:  isexp ? 300 : 200,
+     margin: EdgeInsets.all(9),
+     decoration: BoxDecoration(
+       border: Border.all(color: Colors.grey)
+     ),
+        duration: Duration(milliseconds: 20),
+     child: Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: <Widget>[
+          Stack(
+                      children: <Widget>[
     Container(
-      margin: EdgeInsets.all(8),
-      height: 120,
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 40,
-            color: Colors.grey[300],
-            
-            
-            child: Column(
-              children: <Widget>[
-                Text(""),
-                Icon(Icons.arrow_upward,),
-                SizedBox(height: 5,),
-                Text(rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                SizedBox(height: 5,),
-                Icon(Icons.arrow_downward)
-              ],
-            ),
-            
-          ),
-          SizedBox(width: 10,),
-          Container(
-           child: Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: <Widget>[
-               Row(
-                 children: <Widget>[
-                   Icon(Icons.blur_circular,color: Colors.blue,),
-                   Text("r/news ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
-                   Text("Posted by u/",style: TextStyle(color: Colors.grey,fontSize: 10),),
-                   Text(author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
-                   Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
-                   
-                   
-              
-                  
-                   //Spacer(),
-                 ],
-               ),
-               SizedBox(height: 10,),
-               Text(content,style: TextStyle(fontWeight: FontWeight.bold),),
-                  SizedBox(height: 5,),
-                 tags.isNotEmpty ?  Text( "Tags: "+ tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.grey,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
-               SizedBox(height: 5,),
-              
+  
+                height: 50,
+  
+                width: MediaQuery.of(context).size.width,
+  
+                color: Colors.grey[300],
+  
+                
+  
+              ),
+              Positioned(
+                top: 10,
+                left: 10,
+                  bottom: 10,
+                child:  tags.isEmpty ? Container() :
+                Container(
+  
+                 
+  
                
-               Row(
-                 children: <Widget>[
-                  Text( isMsg==true ? url : url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: isMsg? 15 : 10 ),),
-                 isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
-
-               ],),
+  
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.white),),
+                  ),
+  
+                  color: Colors.lightGreen[400],
+  
+  
+  
+                ),
+              )
+],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(child: Text(url,style: TextStyle(color: Colors.blue,fontSize: 20),)),
+                    Row(children: <Widget>[
+                      Text(rate.toString(),style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+                      SizedBox(height: 5,),
+                      Icon(Icons.star,color: Colors.red,size: 25,),
+                      
+                    ],)
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 30,),
+          // Padding(
+          //   padding: const EdgeInsets.all(10.0),
+          //   child: Container(
+          //     alignment: Alignment.center,
+          //     child: MaterialButton(
+          //       color: Colors.blue,
+          //       onPressed: (){
+                  
+          //       },
+          //       child: Text("Show Reviews",style: TextStyle(color: Colors.white),),
+                
+          //     ),
+          //   ),
+          // )
+     
+            
               
-               Spacer(),
-               Row(
-                 children: <Widget>[
-                   Icon(Icons.message,color: Colors.grey,),
-                   SizedBox(width: 5,),
-                   Text("Comments",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                   SizedBox(width: 5,),
-                   Icon(Icons.share,color: Colors.grey,),
-                   SizedBox(width: 5,),
-                   Text("Share",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
-                   SizedBox(width: 5,),
-                   Icon(Icons.save_alt,color: Colors.grey),
-                   SizedBox(width: 5,),
-                   Text("Save",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
-                   SizedBox(width: 5,),
-                   Text("...",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold))
-                 ],
-               )
+              
+              ExpansionTile(
+              
 
-             ],
+                trailing: Container(height: 10,width: 10),
+                   //initiallyExpanded: false,
+                   
+                  onExpansionChanged: isopen,
+                   title: Padding(
+                     padding: const EdgeInsets.only(left: 130),
+                     child: Card(
+                       elevation: 2.0,
+                                        child: Container(
+                         height: 40,
+                         width: 25,
+                         color: Colors.blue,
+                         child: Padding(
+                           padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                           child: Text( "Show Reviews" ,style: TextStyle(color: Colors.white),),
+                         ),
+                       ),
+                     ),
+                   ),
+                   children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 12,),
+                        Text(author,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                         SizedBox(height: 8,),
+                        Text("        Review: " + content,style: TextStyle(color: Colors.black54,fontSize: 15),),
+                        SizedBox(height: 8,),
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                 decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/stop.png",),fit: BoxFit.cover),
+          
+        ),
+                              ),
+                            ),
+                             Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                 decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/ok.png",),fit: BoxFit.cover),
+          
+        ),
+                              ),
+                            ),
 
-            )
-          )
-        ],
-      ),
+                            //Icon(Icons.ac_unit,size: 40,color: Colors.yellow,)
+                          ],
+                        )
+                        
+                      ],),
+                    )
+                   ],
+                 ),
+               
+            SizedBox(height: 20,)
+        
+       ],
+     )
+          
+          
+       
+     
+   );
+
+  }
+}
+class Overlay extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.85),
+      
     );
-
   }
 }

@@ -27,7 +27,8 @@ int presentURL = 5; //indexing start from 10
  
     Future<String> _getResponse() async //url get request
   {
-    http.Response _response = await http.get("https://backend.scrapshut.com/api/img/");
+     Map<String, String> headers = {"API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+    http.Response _response = await http.get("https://backend.scrapshut.com/api/img/",headers: headers);
     //print(_response.body);
     _data =  jsonDecode(_response.body);
     print(_data);
@@ -36,11 +37,21 @@ int presentURL = 5; //indexing start from 10
     });
     
     print(_results);
-    print(_results[0]["picture"]);
+    //print(_results[0]["picture"]);
     print(_results.length);
-    setState(() {
+    if(_results.length>5)
+    {
+        setState(() {
       imgitems.addAll(_results.getRange(0, 5));
     });
+    }
+    else
+    {
+      setState(() {
+        imgitems.addAll(_results.getRange(0, _results.length));
+      });
+    }
+    
     setState(() {
       havData = true;
     });

@@ -78,7 +78,7 @@ List<dynamic> _results; //stores the list of result of url
   _getResponseMsg() async{ //getmsgresponse
     String bvalue = await storage.read(key: 'btoken');
     Map<String, String> headers = {"Authorization":"JWT $bvalue",
-          "Content-Type":"application/json"};
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
           String url = "https://backend.scrapshut.com/user/message/";
     http.Response response = await http.get(url,headers: headers);
     print("msg");
@@ -102,7 +102,7 @@ List<dynamic> _results; //stores the list of result of url
     print("in delete");
     print(id);
     Map<String, String> headers = {"Authorization":"JWT $bvalue",
-          "Content-Type":"application/json"};
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
           print(headers);
           final http.Response response = await http.delete(
     'https://backend.scrapshut.com/user/post/$id',

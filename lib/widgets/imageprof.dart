@@ -28,7 +28,7 @@ class _ImagesProfState extends State<ImagesProf> {
    _getResponseImg() async{
     String bvalue = await storage.read(key: 'btoken');
     Map<String, String> headers = {"Authorization":"JWT $bvalue",
-          "Content-Type":"application/json"};
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
           String url = "https://backend.scrapshut.com/user/img/";
     http.Response response = await http.get(url,headers: headers);
     print("img");

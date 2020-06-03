@@ -444,47 +444,83 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
             ),
           
           SizedBox(height: 30,),
-          // Padding(
-          //   padding: const EdgeInsets.all(10.0),
-          //   child: Container(
-          //     alignment: Alignment.center,
-          //     child: MaterialButton(
-          //       color: Colors.blue,
-          //       onPressed: (){
-                  
-          //       },
-          //       child: Text("Show Reviews",style: TextStyle(color: Colors.white),),
-                
-          //     ),
-          //   ),
-          // )
+          
+         
      
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child:  isMsg==false && map!=null ?
+              Container(
+                child: ExpansionTile(
+                  trailing: Text(""),
+                  title:   Container(
+                    height: 50,
+                    width: 110,
+                    child: Card(
+                             elevation: 2.0,
+                                              child: Container(
+                               
+                               color: Colors.red,
+                               child: Padding(
+                                 padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                                 child: Text( "Sponsoer" ,style: TextStyle(color: Colors.white),),
+                               ),
+                             ),
+                           ),
+                  ),
+                         children: <Widget>[
+                          
+                            Column(
+                               crossAxisAlignment: CrossAxisAlignment.start,
+                               children: <Widget>[
+                                 Padding(
+                                   padding: const EdgeInsets.all(8.0),
+                                   child: Text("Title: " +map["title"],style:TextStyle(fontWeight: FontWeight.bold),),
+                                 ),
+                                 Padding(
+                                   padding: const EdgeInsets.all(8.0),
+                                   child: Text("URL: "+map["url"],style:TextStyle(fontWeight: FontWeight.bold)),
+                                 ),
+                                 Padding(
+                                   padding: const EdgeInsets.all(8.0),
+                                   child: Text("Content: " +map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)),
+                                 )
+                               ],
+                             ),
+                           
+                         ],
+                ),
+              ) : Container()
             
-              
-              
-           ExpansionTile(
+                ),
+                Expanded(
+                  child: ExpansionTile(
                   
 
-                    title: Container(height: 10,width: 10,),
+                    title: Container(height: 10,width: 0.1,),
                        //initiallyExpanded: false,
                        
                       onExpansionChanged: isopen,
-                       trailing:  Padding(
-                         padding: const EdgeInsets.only(right: 0.1),
-                         child: Card(
-                           elevation: 2.0,
-                                            child: Container(
-                                              
-                             
-                             color: Colors.blue,
-                             child: 
-                               Padding(
-                                 padding: const EdgeInsets.all(8.0),
-                                 child: Text( "Show Reviews" ,style: TextStyle(color: Colors.white),),
-                               ),
-                             
+                       trailing:  Container(
+                         height: 50,
+                         width: 100,
+                         child: 
+                            Card(
+                             elevation: 2.0,
+                                              child: Container(
+                                                
+                               
+                               color: Colors.blue,
+                               child: 
+                                 Padding(
+                                   padding: const EdgeInsets.only(left: 10,top:3),
+                                   child: Text( "Review" ,style: TextStyle(color: Colors.white),),
+                                 ),
+                               
+                             ),
                            ),
-                         ),
+                         
                        ),
                         
                        
@@ -497,7 +533,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                               SizedBox(height: 12,),
                             Text(author,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
                              SizedBox(height: 8,),
-                            Text("        Review: " + content,style: TextStyle(color: Colors.black54,fontSize: 15),),
+                            Text("    Review: " + content,style: TextStyle(color: Colors.black54,fontSize: 15),),
                             SizedBox(height: 8,),
                             Row(
                               children: <Widget>[
@@ -532,45 +568,17 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                         )
                        ],
                      ),
-                      Container(
-              
-              child: isMsg==false && map!=null ?
-              ExpansionTile(
-                title: Text(""),
-                trailing:   Card(
-                         elevation: 2.0,
-                                          child: Container(
-                           
-                           color: Colors.red,
-                           child: Padding(
-                             padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                             child: Text( "Advertisement" ,style: TextStyle(color: Colors.white),),
-                           ),
-                         ),
-                       ),
-                       children: <Widget>[
-                        
-                          Column(
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: <Widget>[
-                               Padding(
-                                 padding: const EdgeInsets.all(8.0),
-                                 child: Text("Title: " +map["title"],style:TextStyle(fontWeight: FontWeight.bold),),
-                               ),
-                               Padding(
-                                 padding: const EdgeInsets.all(8.0),
-                                 child: Text("URL: "+map["url"],style:TextStyle(fontWeight: FontWeight.bold)),
-                               ),
-                               Padding(
-                                 padding: const EdgeInsets.all(8.0),
-                                 child: Text("Content: " +map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)),
-                               )
-                             ],
-                           ),
-                         
-                       ],
-              ) : Container()
+                ),
+                
+
+              ],
             ),
+              
+              
+           
+                     
+              
+            
                
               
                

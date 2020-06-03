@@ -171,62 +171,62 @@ Scaffold buildAuthScreen(){
 
  Scaffold buildUnAuthScreen(){
  return Scaffold(
-body: Container(
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      begin:Alignment.topRight,
-      end:Alignment.bottomLeft, colors: <Color>[
-        Colors.teal,
-        Colors.purple,
-      ],
-        ),
-  ),
-alignment: Alignment.center,
-  child:Column(
-      mainAxisAlignment:MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-
-    children: <Widget>[
-      Container(
-        height: 200,
-        width: 200,
-        decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/wiringbridge.png",),fit: BoxFit.cover),
-          
-        ),
-
-      ),
-      SizedBox(height: 20,),
-    Text("Wiringbridge",style:TextStyle(
-      fontFamily:"Signatra",
-       fontSize:40.0,
-       color:Colors.lightBlue,
-       ),
-       ),
-       SizedBox(height: 20,),
-       RaisedButton(
-         onPressed:(){
-           print("Tap");
-           login();
-
-         } ,
-         child: Container(
-          
-           height:60.0,
-           decoration:BoxDecoration(
-             color: Colors.red,
-             image:DecorationImage(image: AssetImage('assets/images/download.png'),
-             fit : BoxFit.fill,
+     body: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  image: DecorationImage(image: AssetImage("assets/images/wiringbridge.png"))
+                ),
               ),
-           ),   
-         ),
-       ),
+              SizedBox(height: 50),
+              _signInButton(),
+            ],
+          ),
+        ),
+      ),
+    
 
-
-  ],),
-),
  );
 }
+Widget _signInButton() {
+    return OutlineButton(
+      splashColor: Colors.grey,
+      onPressed: () {
+        print("Tap");
+        login();
+      },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      highlightElevation: 0,
+      borderSide: BorderSide(color: Colors.grey),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                'Sign in with Google',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 @override
 
   Widget  build(BuildContext context){

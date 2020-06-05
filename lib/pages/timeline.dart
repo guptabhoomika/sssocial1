@@ -18,6 +18,7 @@ Map<String,dynamic> _msgdata;//stores response of get request from msg endpoint
 List<dynamic> _msgresults; //stores the list of result of url
 List<dynamic> _results; //stores the list of result of msg
  TabController _tabController;
+ Map<String,dynamic> _advertisementdata;
  
 bool isfetching = true; //to show circular loader while data is being fetched
 bool isFetchingmsg = true;
@@ -34,37 +35,71 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
   //url get request
   _getResponse() async //url get request
   {
-    http.Response _response = await http.get("https://backend.scrapshut.com/api/post/");
+    print("url");
+     Map<String, String> headers = {"API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+    http.Response _response = await http.get("https://backend.scrapshut.com/api/post/",headers: headers);
     //print(_response.body);
     _data =  jsonDecode(_response.body);
-    //print(_data);
+    
+    
+
+    //print("urlresopnse after decode");
+    print(_data);
     setState(() {
       _results = _data['results'];
     });
-    print("url");
-    print(_results.length);
+    //print("url");
+    //print(_results.length);
      //setting is fetching false to display data
+   //_advertisementdata =  _results[2]["advertisement"];
+   print(_advertisementdata);
     setState(() {
       isfetching = false;
     });
-    //adds initial 10 urls to list
+    if(_results.length>10)
+    {
+      //adds initial 10 urls to list
     setState(() {
       urlitems.addAll(_results.getRange(0, 9));
     });
+    }
+    else
+    {
+      setState(() {
+        urlitems.addAll(_results.getRange(0, _results.length));
+      });
+      
+    }
+    
    
   }
   //request for msg part
   _getResponseMsg() async{
-    http.Response response = await http.get("https://backend.scrapshut.com/api/msg/");
+    print("msg");
+    Map<String, String> headers = {"API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+    http.Response response = await http.get("https://backend.scrapshut.com/api/msg/",headers: headers);
     _msgdata = jsonDecode(response.body);
-    print("message data");
-    //rint(_msgdata);
+   // print(response.body);
+
+    print("message data after decode");
+    print(_msgdata);
     setState(() {
       _msgresults = _msgdata['results'];
     });
-    setState(() {
+    if(_msgresults.length>10)
+    {
+       setState(() {
       msgitems.addAll(_msgresults.getRange(0, 9));
     });
+
+    }
+    else
+    {
+      setState(() {
+        msgitems.addAll(_msgresults.getRange(0,_msgresults.length));
+      });
+    }
+   
     setState(() {
       isFetchingmsg = false;
     });
@@ -129,6 +164,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
      
       ListView.builder(
         itemCount: (presentURL <= _results.length) ? urlitems.length + 1 : urlitems.length,
+        //itemCount: urlitems.length,
         itemBuilder: (context,index){
         
           return (index == urlitems.length ) ?
@@ -152,7 +188,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                 },
             ),
         ) :
-          display(_results[index]['rate'] ?? 0, _results[index]['author'] ?? "null", _results[index]['url'] ?? "12345678910", _results[index]["created_at"] ,  _results[index]['content'] ?? "nulll", _results[index]['tags'],false,index);
+          display(_results[index]['rate'] ?? 0, _results[index]['author'] ?? "null", _results[index]['url'] ?? "12345678910", _results[index]["created_at"] ,  _results[index]['content'] ?? "nulll", _results[index]['tags'],false,index,_results[index]["advertisement"]);
         },
       ),
 
@@ -182,7 +218,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                 },
             ),
         ) :
-          display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true,index);
+          display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true,index,null);
         },
       ),
      //get the images detais from images file in widgets
@@ -196,7 +232,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
   }
 //method for building the ui in response to the api's values
 //isMsg is swt to true to show data in corrospondence to the msg endpoint
-  Widget display(int rate,String author,String url,String time,String content,List tags,bool isMsg,int index)
+  Widget display(int rate,String author,String url,String time,String content,List tags,bool isMsg,int index,Map<String,dynamic> map)
   
   {
   String c = time.substring(0,10);
@@ -222,6 +258,208 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
     )
     :
     Container(
+  
+                height: 50,
+  
+                width: MediaQuery.of(context).size.width,
+  
+                color: Colors.grey[300],
+  
+                
+  
+              ),
+              Positioned(
+                top: 10,
+                left: 10,
+                  bottom: 10,
+                child:  tags.isEmpty ? Container() :
+                Container(
+  
+                 
+  
+               
+  
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.white),),
+                  ),
+  
+                  color: Colors.lightGreen[400],
+  
+  
+  
+                ),
+              )
+],
+          ),
+          SizedBox(height: 10,),
+           Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(child: Text(url,style: TextStyle(color: Colors.blue,fontSize: 20),)),
+                    Row(children: <Widget>[
+                      Text(rate.toString(),style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+                      SizedBox(height: 3,),
+                      Icon(Icons.star,color: Colors.red,size: 25,),
+                      
+                    ],)
+                  ],
+                ),
+              ),
+            ),
+          
+          SizedBox(height: 30,),
+          
+         
+     
+            Row(
+              children: <Widget>[
+                Expanded(
+                  // child:  isMsg==false && map!=null ?
+              child: Container(
+                child: ExpansionTile(
+                  trailing: Text(""),
+                  title:   Container(
+                    height: 50,
+                    child: Card(
+                             elevation: 2.0,
+                                              child: Container(
+                               
+                               color: Colors.red,
+                               child: Padding(
+                                 padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 10),
+                                 child: Text( "Sponsor" ,style: TextStyle(color: Colors.white),),
+                               ),
+                             ),
+                           ),
+                  ),
+                         children: <Widget>[
+                          
+                            // Column(
+                            //    crossAxisAlignment: CrossAxisAlignment.start,
+                            //    children: <Widget>[
+                            //      Padding(
+                            //        padding: const EdgeInsets.all(8.0),
+                            //        child: Text("Title: " +map["title"],style:TextStyle(fontWeight: FontWeight.bold),),
+                            //      ),
+                            //      Padding(
+                            //        padding: const EdgeInsets.all(8.0),
+                            //        child: Text("URL: "+map["url"],style:TextStyle(fontWeight: FontWeight.bold)),
+                            //      ),
+                            //      Padding(
+                            //        padding: const EdgeInsets.all(8.0),
+                            //        child: Text("Content: " +map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)),
+                            //      )
+                            //    ],
+                            //  ),
+                           
+                         ],
+                ),
+              ) //: Container()
+            
+                ),
+                Expanded(
+                  child: ExpansionTile(
+                  
+
+                    title: Container(height: 10,width: 0.1,),
+                       //initiallyExpanded: false,
+                       
+                      onExpansionChanged: isopen,
+                       trailing:  Container(
+                         
+                         height: 50,
+                         width: 100,
+                         child: 
+                            Card(
+                             elevation: 2.0,
+                                              child: Container(
+                                                
+                               
+                               color: Colors.blue,
+                               child: 
+                                 Padding(
+                                   padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                   child: Text( "Review" ,style: TextStyle(color: Colors.white),),
+                                 ),
+                               
+                             ),
+                           ),
+                         
+                       ),
+                        
+                       
+                       children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(height: 12,),
+                            Text(author,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                             SizedBox(height: 8,),
+                            Text("    Review: " + content,style: TextStyle(color: Colors.black54,fontSize: 15),),
+                            SizedBox(height: 8,),
+                            Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                     decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/stop.png",),fit: BoxFit.cover),
+          
+        ),
+                                  ),
+                                ),
+                                 Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                     decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/ok.png",),fit: BoxFit.cover),
+          
+        ),
+                                  ),
+                                ),
+
+                                //Icon(Icons.ac_unit,size: 40,color: Colors.yellow,)
+                              ],
+                            )
+                            
+                          ],),
+                        )
+                       ],
+                     ),
+                ),
+                
+
+              ],
+            ),
+              
+              
+           
+                     
+              
+            
+               
+              
+               
+            SizedBox(height: 20,)
+        
+       ],
+     )
+          
+          
+       
+     
+   );
+=======
       margin: EdgeInsets.all(8),
       height: 120,
       child: Row(

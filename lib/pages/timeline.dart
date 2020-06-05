@@ -450,48 +450,47 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
             Row(
               children: <Widget>[
                 Expanded(
-                  child:  isMsg==false && map!=null ?
-              Container(
+                  // child:  isMsg==false && map!=null ?
+              child: Container(
                 child: ExpansionTile(
                   trailing: Text(""),
                   title:   Container(
                     height: 50,
-                    width: 110,
                     child: Card(
                              elevation: 2.0,
                                               child: Container(
                                
                                color: Colors.red,
                                child: Padding(
-                                 padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
-                                 child: Text( "Sponsoer" ,style: TextStyle(color: Colors.white),),
+                                 padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 10),
+                                 child: Text( "Sponsor" ,style: TextStyle(color: Colors.white),),
                                ),
                              ),
                            ),
                   ),
                          children: <Widget>[
                           
-                            Column(
-                               crossAxisAlignment: CrossAxisAlignment.start,
-                               children: <Widget>[
-                                 Padding(
-                                   padding: const EdgeInsets.all(8.0),
-                                   child: Text("Title: " +map["title"],style:TextStyle(fontWeight: FontWeight.bold),),
-                                 ),
-                                 Padding(
-                                   padding: const EdgeInsets.all(8.0),
-                                   child: Text("URL: "+map["url"],style:TextStyle(fontWeight: FontWeight.bold)),
-                                 ),
-                                 Padding(
-                                   padding: const EdgeInsets.all(8.0),
-                                   child: Text("Content: " +map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)),
-                                 )
-                               ],
-                             ),
+                            // Column(
+                            //    crossAxisAlignment: CrossAxisAlignment.start,
+                            //    children: <Widget>[
+                            //      Padding(
+                            //        padding: const EdgeInsets.all(8.0),
+                            //        child: Text("Title: " +map["title"],style:TextStyle(fontWeight: FontWeight.bold),),
+                            //      ),
+                            //      Padding(
+                            //        padding: const EdgeInsets.all(8.0),
+                            //        child: Text("URL: "+map["url"],style:TextStyle(fontWeight: FontWeight.bold)),
+                            //      ),
+                            //      Padding(
+                            //        padding: const EdgeInsets.all(8.0),
+                            //        child: Text("Content: " +map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)),
+                            //      )
+                            //    ],
+                            //  ),
                            
                          ],
                 ),
-              ) : Container()
+              ) //: Container()
             
                 ),
                 Expanded(
@@ -503,6 +502,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                        
                       onExpansionChanged: isopen,
                        trailing:  Container(
+                         
                          height: 50,
                          width: 100,
                          child: 
@@ -514,7 +514,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                                color: Colors.blue,
                                child: 
                                  Padding(
-                                   padding: const EdgeInsets.only(left: 10,top:3),
+                                   padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                                    child: Text( "Review" ,style: TextStyle(color: Colors.white),),
                                  ),
                                

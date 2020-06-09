@@ -27,7 +27,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
   // make GET request
   String url = 'https://backend.scrapshut.com/user/profile/';
    Map<String, String> headers = {"Authorization":"JWT $bvalue",
-          "Content-Type":"application/json"};
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
 
 
   http.Response response = await http.get(url,headers: headers);
@@ -59,7 +59,7 @@ List<dynamic> _results; //stores the list of result of url
   // make GET request
   String url = 'https://backend.scrapshut.com/user/post/';
      Map<String, String> headers = {"Authorization":"JWT $bvalue",
-          "Content-Type":"application/json"};
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
           http.Response response = await http.get(url,headers: headers);
           print("url");
           print(response.body);
@@ -269,11 +269,27 @@ List<dynamic> _results; //stores the list of result of url
               child: Column(
                 children: <Widget>[
                   Text(""),
-                  Icon(Icons.arrow_upward,),
+                    Container(
+
+                                    height:30,
+                                    width: 35,
+                                     decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
+          
+        ),
+                    ),
                   SizedBox(height: 5,),
                   Text(rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
                   SizedBox(height: 5,),
-                  Icon(Icons.arrow_downward)
+                   Container(
+
+                                    height:30,
+                                    width: 35,
+                                     decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/ok.png",)),
+          
+        ),
+                   ),
                 ],
               ),
               
@@ -285,9 +301,9 @@ List<dynamic> _results; //stores the list of result of url
                children: <Widget>[
                  Row(
                    children: <Widget>[
-                     Icon(Icons.blur_circular,color: Colors.blue,),
-                     Text("r/news ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
-                     Text("Posted by u/",style: TextStyle(color: Colors.grey,fontSize: 10),),
+                    
+                     tags.isNotEmpty ?  Text( "Tags: "+ tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.grey,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
+                     Text("Author ",style: TextStyle(color: Colors.grey,fontSize: 10),),
                      Text(author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
                      Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
                      
@@ -300,7 +316,7 @@ List<dynamic> _results; //stores the list of result of url
                  SizedBox(height: 10,),
                  Text(content,style: TextStyle(fontWeight: FontWeight.bold),),
                     SizedBox(height: 5,),
-                   tags.isNotEmpty ?  Text( "Tags: "+ tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.grey,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
+                   
                  SizedBox(height: 5,),
                 
                  
@@ -316,17 +332,8 @@ List<dynamic> _results; //stores the list of result of url
                    children: <Widget>[
                      Icon(Icons.message,color: Colors.grey,),
                      SizedBox(width: 5,),
-                     Text("Comments",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                     SizedBox(width: 5,),
-                     Icon(Icons.share,color: Colors.grey,),
-                     SizedBox(width: 5,),
-                     Text("Share",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
-                     SizedBox(width: 5,),
-                     Icon(Icons.save_alt,color: Colors.grey),
-                     SizedBox(width: 5,),
-                     Text("Save",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
-                     SizedBox(width: 5,),
-                     Text("...",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold))
+                     Text("Advertisement",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                     
                    ],
                  )
 

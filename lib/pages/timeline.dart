@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'package:sssocial/widgets/header.dart';
 import 'package:sssocial/widgets/image.dart';
 import 'package:sssocial/widgets/progress.dart';
@@ -31,19 +32,14 @@ List<dynamic> urlitems = List<dynamic>(); //temporary list to store url of a pag
 int perPagemsg  = 10; //count of msg shown in one page
 int presentmsg = 10; //indexing start from 10
 List<dynamic> msgitems = List<dynamic>(); //temporary list to store umsg of a page
-bool isexp = false;
+
 
 
 
 
 
 class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixin{
-  isopen(bool state)
-  {
-    setState(() {
-      isexp= state;
-    });
-  }
+ 
   //url get request
   _getResponse() async //url get request
   {
@@ -118,6 +114,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
     
     print(_msgresults.length);
   }
+ 
   @override
   void initState() {
     // TODO: implement initState
@@ -203,7 +200,20 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                 },
             ),
         ) :
-          display(_results[index]['rate'] ?? 0, _results[index]['author'] ?? "null", _results[index]['url'] ?? "12345678910", _results[index]["created_at"] ,  _results[index]['content'] ?? "nulll", _results[index]['tags'],false,index,_results[index]["advertisement"]);
+          GestureDetector(
+            onTap: (){
+              print(index);
+            },
+            child: Display(
+              rate: _results[index]['rate'] ?? 0, 
+              author: _results[index]['author'] ?? "null",
+              url:  _results[index]['url'] ?? "12345678910", 
+              time: _results[index]["created_at"] , 
+              content:  _results[index]['content'] ?? "nulll", 
+              tags: _results[index]['tags'],
+              isMsg: false,
+              index: index,
+              map: _results[index]["advertisement"] ?? null));
         },
       ),
 
@@ -233,7 +243,18 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                 },
             ),
         ) :
-          display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true,index,null);
+         
+         Display(
+           rate: _msgresults[index]["rate"] ?? 0,
+           author: _msgresults[index]['author'] ?? "null",
+           content: _msgresults[index]['content'] ?? "null",
+           isMsg: true,
+           index: index,
+           map: null,
+           tags: _msgresults[index]['tags'] ,
+           time: _msgresults[index]["created_at"] ,
+           url: _msgresults[index]['review'] ?? "12345678910",
+         );
         },
       ),
      //get the images detais from images file in widgets
@@ -245,116 +266,51 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       
     );
   }
-//method for building the ui in response to the api's values
-//isMsg is swt to true to show data in corrospondence to the msg endpoint
-  Widget display(int rate,String author,String url,String time,String content,List tags,bool isMsg,int index,Map<String,dynamic> map)
+ 
+
+}
+class Overlay extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.85),
+      
+    );
+  }
+}
+class Display extends StatefulWidget {
   
-  {
-  // String c = time.substring(0,10);
-  //   return index%9 == 0  && index>0?
-  //   Padding(
-  //     padding: const EdgeInsets.all(8.0),
-  //     child: Card(
-  //       elevation: 2.0,
-  //           child: Container(
-  //         height: 120,
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(8.0),
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: <Widget>[
-  //               Text("Imagine your product or service here.",style: TextStyle(fontWeight: FontWeight.bold),),
-  //               Text("Target the exact people ",style: TextStyle(fontWeight: FontWeight.bold)),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   )
-  //   :
-  //   Container(
-  //     margin: EdgeInsets.all(8),
-  //     height: 120,
-  //     child: Row(
-  //       children: <Widget>[
-  //         Container(
-  //           width: 40,
-  //           color: Colors.grey[300],
-            
-            
-  //           child: Column(
-  //             children: <Widget>[
-  //               Text(""),
-  //               Icon(Icons.arrow_upward,),
-  //               SizedBox(height: 5,),
-  //               Text(rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-  //               SizedBox(height: 5,),
-  //               Icon(Icons.arrow_downward)
-  //             ],
-  //           ),
-            
-  //         ),
-  //         SizedBox(width: 10,),
-  //         Container(
-  //          child: Column(
-  //            crossAxisAlignment: CrossAxisAlignment.start,
-  //            children: <Widget>[
-  //              Row(
-  //                children: <Widget>[
-  //                  Icon(Icons.blur_circular,color: Colors.blue,),
-  //                  Text("r/news ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),),
-  //                  Text("Posted by u/",style: TextStyle(color: Colors.grey,fontSize: 10),),
-  //                  Text(author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
-  //                  Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
-                   
-                   
-              
-                  
-  //                  //Spacer(),
-  //                ],
-  //              ),
-  //              SizedBox(height: 10,),
-  //              Text(content,style: TextStyle(fontWeight: FontWeight.bold),),
-  //                 SizedBox(height: 5,),
-  //                tags.isNotEmpty ?  Text( "Tags: "+ tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.grey,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
-  //              SizedBox(height: 5,),
-              
-               
-  //              Row(
-  //                children: <Widget>[
-  //                 Text( isMsg==true ? url : url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: isMsg? 15 : 10 ),),
-  //                isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
+  final int rate;
+  final String author;
+  final String url;
+  final String time;
+  final String content;
+  final List tags;
+  final bool isMsg;
+  final int index;
+  final Map<String,dynamic> map;
+  Display({this.rate,this.author,this.url,this.time,this.content,this.tags,this.isMsg,this.index,this.map});
+  @override
+  _DisplayState createState() => _DisplayState();
+}
 
-  //              ],),
-              
-  //              Spacer(),
-  //              Row(
-  //                children: <Widget>[
-  //                  Icon(Icons.message,color: Colors.grey,),
-  //                  SizedBox(width: 5,),
-  //                  Text("Comments",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-  //                  SizedBox(width: 5,),
-  //                  Icon(Icons.share,color: Colors.grey,),
-  //                  SizedBox(width: 5,),
-  //                  Text("Share",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
-  //                  SizedBox(width: 5,),
-  //                  Icon(Icons.save_alt,color: Colors.grey),
-  //                  SizedBox(width: 5,),
-  //                  Text("Save",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold)),
-  //                  SizedBox(width: 5,),
-  //                  Text("...",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold))
-  //                ],
-  //              )
-
-  //            ],
-
-  //           )
-  //         )
-  //       ],
-  //     ),
-  //   );
-
-   return index%9 == 0  && index>0?
+class _DisplayState extends State<Display> {
+   bool isexp = false;
+  @override
+  Widget build(BuildContext context) {
+   
+    onchange(bool val)
+    {
+      setState(() {
+        isexp = !isexp;
+      });
+      print(isexp.toString() +  " " + widget.index.toString());
+    }
+    
+    //print(map);
+  String c = widget.time.substring(0,10);
+    
+    return widget.index%9 == 0  && widget.index>0?
     Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -375,231 +331,152 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       ),
     )
     :
-    AnimatedContainer(
+  AnimatedContainer(
     
-      
-     //height:  isexp ? 300 : 200,
-     margin: EdgeInsets.all(9),
-     decoration: BoxDecoration(
-       border: Border.all(color: Colors.grey)
-     ),
-        duration: Duration(milliseconds: 20),
-     child: Column(
-       crossAxisAlignment: CrossAxisAlignment.start,
-       children: <Widget>[
-          Stack(
-                      children: <Widget>[
-    Container(
-  
-                height: 50,
-  
-                width: MediaQuery.of(context).size.width,
-  
-                color: Colors.grey[300],
-  
-                
-  
-              ),
-              Positioned(
-                top: 10,
-                left: 10,
-                  bottom: 10,
-                child:  tags.isEmpty ? Container() :
-                Container(
-  
-                 
-  
-               
-  
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.white),),
-                  ),
-  
-                  color: Colors.lightGreen[400],
-  
-  
-  
-                ),
-              )
-],
-          ),
-          SizedBox(height: 10,),
-           Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Flexible(child: Text(url,style: TextStyle(color: Colors.blue,fontSize: 20),)),
-                    Row(children: <Widget>[
-                      Text(rate.toString(),style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
-                      SizedBox(height: 3,),
-                      Icon(Icons.star,color: Colors.red,size: 25,),
-                      
-                    ],)
-                  ],
-                ),
-              ),
-            ),
-          
-          SizedBox(height: 30,),
-          
-         
+
+      height: isexp==true ?250 : 140,
      
-            Row(
-              children: <Widget>[
-                Expanded(
-                  // child:  isMsg==false && map!=null ?
-              child: Container(
-                child: ExpansionTile(
-                  trailing: Text(""),
-                  title:   Container(
-                    height: 50,
-                    child: Card(
-                             elevation: 2.0,
-                                              child: Container(
-                               
-                               color: Colors.red,
-                               child: Padding(
-                                 padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 10),
-                                 child: Text( "Sponsor" ,style: TextStyle(color: Colors.white),),
-                               ),
-                             ),
-                           ),
-                  ),
-                         children: <Widget>[
-                          
-                            // Column(
-                            //    crossAxisAlignment: CrossAxisAlignment.start,
-                            //    children: <Widget>[
-                            //      Padding(
-                            //        padding: const EdgeInsets.all(8.0),
-                            //        child: Text("Title: " +map["title"],style:TextStyle(fontWeight: FontWeight.bold),),
-                            //      ),
-                            //      Padding(
-                            //        padding: const EdgeInsets.all(8.0),
-                            //        child: Text("URL: "+map["url"],style:TextStyle(fontWeight: FontWeight.bold)),
-                            //      ),
-                            //      Padding(
-                            //        padding: const EdgeInsets.all(8.0),
-                            //        child: Text("Content: " +map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)),
-                            //      )
-                            //    ],
-                            //  ),
-                           
-                         ],
-                ),
-              ) //: Container()
+      duration: Duration(milliseconds: 200),
+      margin: EdgeInsets.all(8),
+      
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 40,
+            color: Colors.grey[300],
             
-                ),
-                Expanded(
-                  child: ExpansionTile(
-                  
+            
+            child: Column(
+              children: <Widget>[
+                Text(""),
+                //Icon(Icons.arrow_upward,),
+                Container(
 
-                    title: Container(height: 10,width: 0.1,),
-                       //initiallyExpanded: false,
-                       
-                      onExpansionChanged: isopen,
-                       trailing:  Container(
-                         
-                         height: 50,
-                         width: 100,
-                         child: 
-                            Card(
-                             elevation: 2.0,
-                                              child: Container(
-                                                
-                               
-                               color: Colors.blue,
-                               child: 
-                                 Padding(
-                                   padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                                   child: Text( "Review" ,style: TextStyle(color: Colors.white),),
-                                 ),
-                               
-                             ),
-                           ),
-                         
-                       ),
-                        
-                       
-                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(height: 12,),
-                            Text(author,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-                             SizedBox(height: 8,),
-                            Text("    Review: " + content,style: TextStyle(color: Colors.black54,fontSize: 15),),
-                            SizedBox(height: 8,),
-                            Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
+                                    height:30,
+                                    width: 35,
                                      decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/stop.png",),fit: BoxFit.cover),
+          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
           
         ),
                                   ),
-                                ),
-                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
+                SizedBox(height: 10,),
+                Text(widget.rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+                SizedBox(height: 10,),
+                   Container(
+                                    height:30,
+                                    width: 35,
                                      decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/ok.png",),fit: BoxFit.cover),
+          image: DecorationImage(image: AssetImage("assets/images/ok.png",)),
           
         ),
-                                  ),
-                                ),
-
-                                //Icon(Icons.ac_unit,size: 40,color: Colors.yellow,)
-                              ],
-                            )
-                            
-                          ],),
-                        )
-                       ],
-                     ),
-                ),
-                
-
+                   ),
               ],
             ),
-              
-              
-           
-                     
-              
             
-               
+          ),
+          SizedBox(width: 10,),
+          Container(
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: <Widget>[
+               Row(
+                 children: <Widget>[
+                   //Icon(Icons.blur_circular,color: Colors.blue,),
+                   widget.tags.isNotEmpty ?  Text( "Tags: "+ widget.tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.black,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
+                   Text("Author ",style: TextStyle(color: Colors.grey,fontSize: 10),),
+                   Text(widget.author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
+                   Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
+                   
+                   
               
+                  
+                   //Spacer(),
+                 ],
+               ),
+               SizedBox(height: 10,),
+               Text(widget.content,style: TextStyle(fontWeight: FontWeight.bold),),
+                  SizedBox(height: 10,),
+                 
+          
                
-            SizedBox(height: 20,)
-        
-       ],
-     )
-          
-          
-       
-     
-   );
+               Row(
+                 children: <Widget>[
+                  Text( widget.isMsg==true ? widget.url : widget.url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: widget.isMsg? 15 : 10 ),),
+                 widget.isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
 
-  }
-}
-class Overlay extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.85),
-      
+               ],),
+              
+            // Row(
+            //   children: <Widget>[
+            //     Text("aa"),
+                
+                
+
+            //   ],
+            // )
+            SizedBox(height: 5,),
+            AnimatedContainer(
+              
+              height: isexp == true? 160 : 60,
+              duration: Duration(milliseconds: 200),
+              width: MediaQuery.of(context).size.width * .80,
+              
+                              child: !widget.isMsg ? ExpansionTile(
+                  title: Row(
+                  children: <Widget>[
+                    Icon(Icons.message,color: Colors.grey,),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Text("Advertisement",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                    )
+                  ],
+                ),
+                trailing: Container(height: 2,width: 2,),
+                onExpansionChanged: onchange,
+                children: <Widget>[
+                 widget.map!=null ?  Container(
+                   alignment: Alignment.topLeft,
+                  
+                   child: Column(
+                                 //mainAxisAlignment: MainAxisAlignment.start,
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 
+                                 children: <Widget>[
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: widget.map["title"]!= null ?
+                                     Text("Title: " +widget.map["title"],style:TextStyle(fontWeight: FontWeight.bold),) : Container()
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: widget.map["url"]!=null ?
+                                     Text("URL: "+widget.map["url"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: widget.map["advertizing_content"]!=null ?
+                                     Text("Content: " +widget.map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
+                                   )
+                                 ],
+                               ),
+                 ) : Container()
+
+                ],
+                ) : Container()
+                
+            )
+              
+
+             ],
+             
+
+            )
+          )
+        ],
+      ),
     );
+
+
+    
   }
 }

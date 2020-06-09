@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -9,8 +8,6 @@ import 'package:sssocial/widgets/header.dart';
 import 'package:sssocial/widgets/image.dart';
 import 'package:sssocial/widgets/progress.dart';
 import 'package:http/http.dart' as http;
-
-
 class TimeLine extends StatefulWidget {
    
 
@@ -131,12 +128,10 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
      
     super.initState();
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Scaffold(
+    return Scaffold(
       appBar: AppBar( 
         title: Text(
   
@@ -166,8 +161,7 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
       ],
     ),),
       
-      body :
-      TabBarView(
+      body : TabBarView(
         controller: _tabController,
         children: <Widget>[
           //while isfetching is true a circular indicator is shown

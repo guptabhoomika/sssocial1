@@ -74,6 +74,15 @@ void dispose()
 
           );
  if(response.statusCode == 200) {
+     
+                        Navigator.of(context).push(PageRouteBuilder(
+    opaque: false,
+    pageBuilder: (BuildContext context, _, __) =>
+        SomeDialog()));
+    
+                    print("tap");
+
+                   
     setState(() {
      isAuth = true;
    });
@@ -216,5 +225,21 @@ Widget _signInButton() {
   Widget  build(BuildContext context){
     // return Text("home");
     return isAuth ? buildAuthScreen() : buildUnAuthScreen();
+  }
+}
+
+class SomeDialog extends StatelessWidget {
+  
+  
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.75),
+      appBar: AppBar(
+        backgroundColor: Colors.black.withOpacity(0.75) ,
+      ),
+      
+      body: Center(child: Text("It's a a dialog",style: TextStyle(color: Colors.white),)),
+    );
   }
 }

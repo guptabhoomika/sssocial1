@@ -23,7 +23,10 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> with SingleTickerProviderStateMixin {
   List<Tab> _listTab = List();
   _makeGetRequest() async {
-    String bvalue = await storage.read(key: 'btoken');
+    setState(() {
+      data = false;
+    });
+    String bvalue = await Methods.storage.read(key: 'btoken');
   // make GET request
   String url = 'https://backend.scrapshut.com/user/profile/';
    Map<String, String> headers = {"Authorization":"JWT $bvalue",
@@ -55,7 +58,10 @@ List<dynamic> _msgresults; //stores the list of result of msg
 List<dynamic> _results; //stores the list of result of url
   _getTabResponse() //geturlresponse
   async {
-     String bvalue = await storage.read(key: 'btoken');
+    setState(() {
+      urldata = false;
+    });
+     String bvalue = await Methods.storage.read(key: 'btoken');
   // make GET request
   String url = 'https://backend.scrapshut.com/user/post/';
      Map<String, String> headers = {"Authorization":"JWT $bvalue",
@@ -75,8 +81,12 @@ List<dynamic> _results; //stores the list of result of url
     });
 
   }
-  _getResponseMsg() async{ //getmsgresponse
-    String bvalue = await storage.read(key: 'btoken');
+  _getResponseMsg() async{ 
+    //getmsgresponse
+    setState(() {
+      msgdata = false;
+    });
+    String bvalue = await Methods.storage.read(key: 'btoken');
     Map<String, String> headers = {"Authorization":"JWT $bvalue",
           "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
           String url = "https://backend.scrapshut.com/user/message/";
@@ -98,7 +108,7 @@ List<dynamic> _results; //stores the list of result of url
     print(_msgresults.length);
   }
   Future<http.Response> delete(int id) async {
-     String bvalue = await storage.read(key: 'btoken');
+     String bvalue = await Methods.storage.read(key: 'btoken');
     print("in delete");
     print(id);
     Map<String, String> headers = {"Authorization":"JWT $bvalue",
@@ -149,8 +159,9 @@ List<dynamic> _results; //stores the list of result of url
   @override
   Widget build(BuildContext context)  {
 
-    return  data == false ? Center(child: CircularProgressIndicator(),) :
+    return  data == false && urldata == false && msgdata == false ? Center(child: CircularProgressIndicator(),) :
     Scaffold(
+      
       appBar: header(context,isAppTitle: false,titleText: "Profile"),
     
       body:  
@@ -197,6 +208,11 @@ List<dynamic> _results; //stores the list of result of url
                 
               ],),
             ),
+            RaisedButton(
+              child: Text("LOGOUT"),
+              onPressed: (){Methods.logout(context);},
+            ),
+            
             SizedBox(height: 20,),
             Divider(),
             Container(
@@ -210,7 +226,7 @@ List<dynamic> _results; //stores the list of result of url
               
             )
             ),
-            Container(
+           _results!=null && _msgresults!=null ? Container(
               height:  MediaQuery.of(context).size.height * 0.60,
               child: TabBarView(
                 controller: _tabController,
@@ -235,7 +251,8 @@ List<dynamic> _results; //stores the list of result of url
                     ImagesProf()
                 ],
               ),
-            )
+            ) : Container()
+
 
     
             

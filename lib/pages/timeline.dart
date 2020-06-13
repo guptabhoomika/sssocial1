@@ -3,12 +3,19 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sssocial/pages/home.dart';
+import 'package:sssocial/pages/home.dart';
 
 import 'package:sssocial/widgets/header.dart';
 import 'package:sssocial/widgets/image.dart';
 import 'package:sssocial/widgets/progress.dart';
 import 'package:http/http.dart' as http;
+
+import 'home.dart';
+import 'home.dart';
 class TimeLine extends StatefulWidget {
+  
    
 
   @override
@@ -40,9 +47,14 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
   //url get request
   _getResponse() async //url get request
   {
+    setState(() {
+      isfetching = true;
+    });
+    
     print("url");
      Map<String, String> headers = {"API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
     http.Response _response = await http.get("https://backend.scrapshut.com/api/post/",headers: headers);
+    
     //print(_response.body);
     _data =  jsonDecode(_response.body);
     
@@ -111,15 +123,44 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
     
     print(_msgresults.length);
   }
+  
+ List<dynamic> userresults = List();
+ String uid;
+   _makeGetUserRequest() async {
+    String bvalue = await Methods.storage.read(key: 'btoken');
+  // make GET request
+  String url = 'https://backend.scrapshut.com/user/profile/';
+  
+   Map<String, String> headers = {"Authorization":"JWT $bvalue",
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+
+
+  http.Response response = await http.get(url,headers: headers);
+  
+  // sample info available in response
+  int statusCode = response.statusCode;
+  print(statusCode);
+  print(response.body);
+  Map<String,dynamic> val =jsonDecode(response.body);
+
+     userresults = val['results'];
+     uid = userresults[0]["userid"];
+ 
+  print(userresults);
+  print(uid.toString());
+  
+  }
+  
  
   @override
   void initState() {
     // TODO: implement initState
     //initializing the tab controller and calling get requests
      _tabController = new TabController(length: 3,initialIndex: 0, vsync: this);
+      _makeGetUserRequest();
     _getResponse();
     _getResponseMsg();
-
+   
     
     
 
@@ -131,8 +172,10 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+    Scaffold(
       appBar: AppBar( 
+        automaticallyImplyLeading: false,
         title: Text(
   
       "Wiringbridge" ,
@@ -194,11 +237,8 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
                 },
             ),
         ) :
-          GestureDetector(
-            onTap: (){
-              print(index);
-            },
-            child: Display(
+          
+             Display(
               rate: _results[index]['rate'] ?? 0, 
               author: _results[index]['author'] ?? "null",
               url:  _results[index]['url'] ?? "12345678910", 
@@ -207,7 +247,10 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
               tags: _results[index]['tags'],
               isMsg: false,
               index: index,
-              map: _results[index]["advertisement"] ?? null));
+              map: _results[index]["advertisement"] ?? null,
+              pid: _results[index]["id"],
+              uid: int.parse(uid),
+              );
         },
       ),
 
@@ -248,6 +291,8 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
            tags: _msgresults[index]['tags'] ,
            time: _msgresults[index]["created_at"] ,
            url: _msgresults[index]['review'] ?? "12345678910",
+           pid: _msgresults[index]["id"],
+           uid: int.parse(uid),
          );
         },
       ),
@@ -283,12 +328,43 @@ class Display extends StatefulWidget {
   final bool isMsg;
   final int index;
   final Map<String,dynamic> map;
-  Display({this.rate,this.author,this.url,this.time,this.content,this.tags,this.isMsg,this.index,this.map});
+  final int pid;
+  final int uid;
+  Display({this.rate,this.author,this.url,this.time,this.content,this.tags,this.isMsg,this.index,this.map,this.pid,this.uid});
   @override
   _DisplayState createState() => _DisplayState();
 }
 
 class _DisplayState extends State<Display> {
+  Map<String,dynamic> res = Map();
+  Map<String,dynamic> resd = Map();
+  int coun =0;
+  makeupvote(int uid,int pid) async
+  {
+    Map<String, String> headers = {"API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+    String url = "https://backend.scrapshut.com/api/post/vote/$pid/$uid/upvote";
+    print(url);
+    http.Response response = await http.get(url,headers: headers);
+    print(response.body);
+    print(response.statusCode);
+    res = jsonDecode(response.body);
+    setState(() {
+      coun = res["upvotes"];
+    });
+  }
+  makedownvote(int uid,int pid) async
+  {
+    Map<String, String> headers = {"API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+    String url = "https://backend.scrapshut.com/api/post/vote/$pid/$uid/downvote";
+    print(url);
+    http.Response response = await http.get(url,headers: headers);
+    print(response.body);
+    print(response.statusCode);
+    resd = jsonDecode(response.body);
+    setState(() {
+      coun = resd["upvotes"];
+    });
+  }
    bool isexp = false;
   @override
   Widget build(BuildContext context) {
@@ -301,7 +377,7 @@ class _DisplayState extends State<Display> {
       print(isexp.toString() +  " " + widget.index.toString());
     }
     
-    //print(map);
+    //print(widget.pid);
   String c = widget.time.substring(0,10);
     
     return widget.index%9 == 0  && widget.index>0?
@@ -344,25 +420,37 @@ class _DisplayState extends State<Display> {
               children: <Widget>[
                 Text(""),
                 //Icon(Icons.arrow_upward,),
-                Container(
+                GestureDetector(
+                  onTap: (){
+                    print('Ok');
+                    makeupvote(widget.uid, widget.pid);
+                  },
+                                  child: Container(
 
-                                    height:30,
-                                    width: 35,
-                                     decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
-          
-        ),
-                                  ),
-                SizedBox(height: 10,),
-                Text(widget.rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                SizedBox(height: 10,),
-                   Container(
-                                    height:30,
-                                    width: 35,
-                                     decoration: BoxDecoration(
+                                      height:30,
+                                      width: 35,
+                                       decoration: BoxDecoration(
           image: DecorationImage(image: AssetImage("assets/images/ok.png",)),
           
         ),
+                                    ),
+                ),
+                SizedBox(height: 10,),
+                Text(coun.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+                SizedBox(height: 10,),
+                   GestureDetector(
+                     onTap: (){
+                       print("Stop");
+                       makedownvote(widget.uid, widget.pid);
+                     },
+                                        child: Container(
+                                      height:30,
+                                      width: 35,
+                                       decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
+          
+        ),
+                     ),
                    ),
               ],
             ),

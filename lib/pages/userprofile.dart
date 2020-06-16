@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sssocial/pages/home.dart';
 import 'package:sssocial/widgets/header.dart';
 import 'package:http/http.dart' as http;
-import 'package:sssocial/widgets/image.dart';
+
 import 'package:sssocial/widgets/imageprof.dart';
 
 class UserProfile extends StatefulWidget {
@@ -208,10 +208,11 @@ List<dynamic> _results; //stores the list of result of url
                 
               ],),
             ),
-            RaisedButton(
-              child: Text("LOGOUT"),
-              onPressed: (){Methods.logout(context);},
-            ),
+            // RaisedButton(
+            //   color: Colors.red,
+            //   child: Text("LOGOUT",style: TextStyle(color: Colors.white),),
+            //   onPressed: (){Methods.logout(context);},
+            // ),
             
             SizedBox(height: 20,),
             Divider(),
@@ -236,14 +237,37 @@ List<dynamic> _results; //stores the list of result of url
                    ListView.builder(
           itemCount: _results.length,
           itemBuilder: (context,index){
-            return display(_results[index]['rate'], _results[index]['author'], _results[index]['url'], _results[index]["created_at"],  _results[index]['content'], _results[index]['tags'],false,_results[index]["id"]);
+            return 
+             DisplayP(
+              rate: _results[index]['rate'] ?? 0, 
+              author: _results[index]['author'] ?? "null",
+              url:  _results[index]['url'] ?? "12345678910", 
+              time: _results[index]["created_at"] , 
+              content:  _results[index]['content'] ?? "nulll", 
+              tags: _results[index]['tags'],
+              isMsg: false,
+              index: index,
+              map: _results[index]["advertisement"] ?? null,
+             
+              );
           },
          ),
         //Text("url"),
                    ListView.builder(
         itemCount: _msgresults.length,
         itemBuilder: (context,index){
-          return display(_msgresults[index]['rate'], _msgresults[index]['author'], _msgresults[index]['review'], _msgresults[index]["created_at"],  _msgresults[index]['content'], _msgresults[index]['tags'],true,_msgresults[index]["id"]);
+          return DisplayP(
+           rate: _msgresults[index]["rate"] ?? 0,
+           author: _msgresults[index]['author'] ?? "null",
+           content: _msgresults[index]['content'] ?? "null",
+           isMsg: true,
+           index: index,
+           map: null,
+           tags: _msgresults[index]['tags'] ,
+           time: _msgresults[index]["created_at"] ,
+           url: _msgresults[index]['review'] ?? "12345678910",
+           
+         );
         },
       ),
                   //Text("ms"),
@@ -263,107 +287,8 @@ List<dynamic> _results; //stores the list of result of url
     );
   }
 
-  InkWell display(int rate,String author,String url,String time,String content,List tags,bool isMsg,int id)
   
-  {
-  String c = time.substring(0,10);
-    return InkWell(
-      onLongPress: (){
-            print("Preess");
-        showAlertDialog(context,id,isMsg);
-      
-      },
-          child: Container(
-        margin: EdgeInsets.all(8),
-        height: 120,
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 40,
-              color: Colors.grey[300],
-              
-              
-              child: Column(
-                children: <Widget>[
-                  Text(""),
-                    Container(
-
-                                    height:30,
-                                    width: 35,
-                                     decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
-          
-        ),
-                    ),
-                  SizedBox(height: 5,),
-                  Text(rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                  SizedBox(height: 5,),
-                   Container(
-
-                                    height:30,
-                                    width: 35,
-                                     decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/ok.png",)),
-          
-        ),
-                   ),
-                ],
-              ),
-              
-            ),
-            SizedBox(width: 10,),
-            Container(
-             child: Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: <Widget>[
-                 Row(
-                   children: <Widget>[
-                    
-                     tags.isNotEmpty ?  Text( "Tags: "+ tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.grey,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
-                     Text("Author ",style: TextStyle(color: Colors.grey,fontSize: 10),),
-                     Text(author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
-                     Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
-                     
-                     
-                
-                    
-                     //Spacer(),
-                   ],
-                 ),
-                 SizedBox(height: 10,),
-                 Text(content,style: TextStyle(fontWeight: FontWeight.bold),),
-                    SizedBox(height: 5,),
-                   
-                 SizedBox(height: 5,),
-                
-                 
-                 Row(
-                   children: <Widget>[
-                    Text( isMsg==true ? url : url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: isMsg? 15 : 10 ),),
-                   isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
-
-                 ],),
-                
-                 Spacer(),
-                 Row(
-                   children: <Widget>[
-                     Icon(Icons.message,color: Colors.grey,),
-                     SizedBox(width: 5,),
-                     Text("Advertisement",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                     
-                   ],
-                 )
-
-               ],
-
-              )
-            )
-          ],
-        ),
-      ),
-    );
-
-  }
+ 
   showAlertDialog(BuildContext context,int id,bool msg) {  
   // Create button  
   
@@ -407,4 +332,204 @@ List<dynamic> _results; //stores the list of result of url
   );  
 }  
 }
+class DisplayP extends StatefulWidget {
+  
+  final int rate;
+  final String author;
+  final String url;
+  final String time;
+  final String content;
+  final List tags;
+  final bool isMsg;
+  final int index;
+  final Map<String,dynamic> map;
+
+  DisplayP({this.rate,this.author,this.url,this.time,this.content,this.tags,this.isMsg,this.index,this.map});
+  @override
+  _DisplayPState createState() => _DisplayPState();
+}
+
+class _DisplayPState extends State<DisplayP> {
+  Map<String,dynamic> res = Map();
+  Map<String,dynamic> resd = Map();
+
+   bool isexp = false;
+  @override
+  Widget build(BuildContext context) {
+   
+    onchange(bool val)
+    {
+      setState(() {
+        isexp = !isexp;
+      });
+      print(isexp.toString() +  " " + widget.index.toString());
+      print(widget.map);
+    }
+    
+    //print(widget.pid);
+  String c = widget.time.substring(0,10);
+    
+    return 
+  AnimatedContainer(
+    
+
+      height: isexp==true ?250 : 140,
+     
+      duration: Duration(milliseconds: 200),
+      margin: EdgeInsets.all(8),
+      
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 40,
+            color: Colors.grey[300],
+            
+            
+            child: Column(
+              children: <Widget>[
+                Text(""),
+                //Icon(Icons.arrow_upward,),
+                GestureDetector(
+                  onTap: (){
+                    print('Ok');
+                   
+                  },
+                                  child: Container(
+
+                                      height:30,
+                                      width: 35,
+                                       decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/ok.png",)),
+          
+        ),
+                                    ),
+                ),
+                SizedBox(height: 10,),
+                Text(widget.rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
+                SizedBox(height: 10,),
+                   GestureDetector(
+                     onTap: (){
+                       print("Stop");
+                      
+                     },
+                                        child: Container(
+                                      height:30,
+                                      width: 35,
+                                       decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
+          
+        ),
+                     ),
+                   ),
+              ],
+            ),
+            
+          ),
+          SizedBox(width: 10,),
+          Container(
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: <Widget>[
+               Row(
+                 children: <Widget>[
+                   //Icon(Icons.blur_circular,color: Colors.blue,),
+                   widget.tags.isNotEmpty ?  Text( "Tags: "+ widget.tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.black,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
+                   Text("Author ",style: TextStyle(color: Colors.grey,fontSize: 10),),
+                   Text(widget.author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
+                   Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
+                   
+                   
+              
+                  
+                   //Spacer(),
+                 ],
+               ),
+               SizedBox(height: 10,),
+               Text(widget.content,style: TextStyle(fontWeight: FontWeight.bold),),
+                  SizedBox(height: 10,),
+                 
+          
+               
+               Row(
+                 children: <Widget>[
+                  Text( widget.isMsg==true ? widget.url : widget.url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: widget.isMsg? 15 : 10 ),),
+                 widget.isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
+
+               ],),
+              
+            // Row(
+            //   children: <Widget>[
+            //     Text("aa"),
+                
+                
+
+            //   ],
+            // )
+            SizedBox(height: 5,),
+            AnimatedContainer(
+              
+              height: isexp == true? 160 : 60,
+              duration: Duration(milliseconds: 200),
+              width: MediaQuery.of(context).size.width * .80,
+              
+                              child:  widget.map!=null ? ExpansionTile(
+                  title: Row(
+                  children: <Widget>[
+                    Icon(Icons.message,color: Colors.grey,),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Text("Advertisement",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
+                    )
+                  ],
+                ),
+                trailing: Container(height: 2,width: 2,),
+                onExpansionChanged: onchange,
+                children: <Widget>[
+                 widget.map!=null ?  Container(
+                   alignment: Alignment.topLeft,
+                  
+                   child: Column(
+                                 //mainAxisAlignment: MainAxisAlignment.start,
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 
+                                 children: <Widget>[
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: widget.map["title"]!= null ?
+                                     Text("Title: " +widget.map["title"],style:TextStyle(fontWeight: FontWeight.bold),) : Container()
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: widget.map["url"]!=null ?
+                                     Text("URL: "+widget.map["url"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: widget.map["advertizing_content"]!=null ?
+                                     Text("Content: " +widget.map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
+                                   )
+                                 ],
+                               ),
+                 ) : Container()
+
+                ],
+                ) : Container()
+                
+            )
+              
+
+             ],
+             
+
+            )
+          )
+        ],
+      ),
+    );
+
+
+    
+  }
+}
+
  

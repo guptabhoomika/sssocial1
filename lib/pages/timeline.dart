@@ -375,6 +375,7 @@ class _DisplayState extends State<Display> {
         isexp = !isexp;
       });
       print(isexp.toString() +  " " + widget.index.toString());
+      print(widget.map);
     }
     
     //print(widget.pid);
@@ -503,7 +504,7 @@ class _DisplayState extends State<Display> {
               duration: Duration(milliseconds: 200),
               width: MediaQuery.of(context).size.width * .80,
               
-                              child: !widget.isMsg ? ExpansionTile(
+                              child: widget.map!=null ? ExpansionTile(
                   title: Row(
                   children: <Widget>[
                     Icon(Icons.message,color: Colors.grey,),

@@ -37,7 +37,8 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
   // sample info available in response
   int statusCode = response.statusCode;
   print(statusCode);
-  print(response.body);
+  // print(response.body);
+  
   Map<String,dynamic> val =jsonDecode(response.body);
   setState(() {
      results = val['results'];
@@ -68,7 +69,7 @@ List<dynamic> _results; //stores the list of result of url
           "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
           http.Response response = await http.get(url,headers: headers);
           print("url");
-          print(response.body);
+          // print(response.body);
           print(response.statusCode);
           _data =  jsonDecode(response.body);
     print(_data);
@@ -96,7 +97,7 @@ List<dynamic> _results; //stores the list of result of url
     print(response.body);
    
     _msgdata = jsonDecode(response.body);
-    print(_msgdata);
+ 
     setState(() {
       _msgresults = _msgdata['results'];
     });
@@ -107,31 +108,7 @@ List<dynamic> _results; //stores the list of result of url
    });
     print(_msgresults.length);
   }
-  Future<http.Response> delete(int id) async {
-     String bvalue = await Methods.storage.read(key: 'btoken');
-    print("in delete");
-    print(id);
-    Map<String, String> headers = {"Authorization":"JWT $bvalue",
-          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
-          print(headers);
-          final http.Response response = await http.delete(
-    'https://backend.scrapshut.com/user/post/$id',
-    headers:  headers
-    
-  );
-  
-   Navigator.of(context, rootNavigator: true).pop();
-  print("delete");
-  //var r =  jsonDecode(response.body);
-  //print(r);
-  print(response.statusCode);
  
-  // print("making get req again");
-  _getTabResponse();
-  
-  
-  return response;
-}
  
 
   TabController _tabController;
@@ -243,11 +220,12 @@ List<dynamic> _results; //stores the list of result of url
               author: _results[index]['author'] ?? "null",
               url:  _results[index]['url'] ?? "12345678910", 
               time: _results[index]["created_at"] , 
-              content:  _results[index]['content'] ?? "nulll", 
+              content:  _results[index]['review'] ?? "nulll", 
               tags: _results[index]['tags'],
               isMsg: false,
               index: index,
               map: _results[index]["advertisement"] ?? null,
+              pid: _results[index]["id"],
              
               );
           },
@@ -266,6 +244,7 @@ List<dynamic> _results; //stores the list of result of url
            tags: _msgresults[index]['tags'] ,
            time: _msgresults[index]["created_at"] ,
            url: _msgresults[index]['review'] ?? "12345678910",
+           pid: _msgresults[index]["id"],
            
          );
         },
@@ -297,7 +276,7 @@ List<dynamic> _results; //stores the list of result of url
     onPressed:  () {
       if(msg==false)
       {
-           delete(id);
+           //delete(id);
       }
       else
       {
@@ -343,8 +322,9 @@ class DisplayP extends StatefulWidget {
   final bool isMsg;
   final int index;
   final Map<String,dynamic> map;
+  final int pid;
 
-  DisplayP({this.rate,this.author,this.url,this.time,this.content,this.tags,this.isMsg,this.index,this.map});
+  DisplayP({this.rate,this.author,this.url,this.time,this.content,this.tags,this.isMsg,this.index,this.map,this.pid});
   @override
   _DisplayPState createState() => _DisplayPState();
 }
@@ -353,11 +333,20 @@ class _DisplayPState extends State<DisplayP> {
   Map<String,dynamic> res = Map();
   Map<String,dynamic> resd = Map();
 
+  bool expd = false;
    bool isexp = false;
+   bool isedit = false;
+   TextEditingController _textEditingController;
+   @override
+  void initState() {
+    // TODO: implement initState
+    _textEditingController = new TextEditingController();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
    
-    onchange(bool val)
+    onchange()
     {
       setState(() {
         isexp = !isexp;
@@ -365,7 +354,67 @@ class _DisplayPState extends State<DisplayP> {
       print(isexp.toString() +  " " + widget.index.toString());
       print(widget.map);
     }
+    edit()
+    {
+      print("in edit");
+      setState(() {
+        isedit = !isedit;
+      });
+    }
+    put(int id,String text) async
+    {
+      print("in put");
+
+      print(id);
+      print(text);
+        String bvalue = await Methods.storage.read(key: 'btoken');
+        print(bvalue);
+         String json = jsonEncode({
+			
+            "review": text
+         });
+      Map<String, String> headers = {"Authorization":"JWT $bvalue",
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+              final http.Response response = await http.put(
+    'https://backend.scrapshut.com/api/post/$id',
+    headers:  headers,
+    body: json,
     
+  );
+  print(response.statusCode);
+print(response.body);
+    }
+  Future<http.Response> delete(int id) async {
+     String bvalue = await Methods.storage.read(key: 'btoken');
+    
+    print("in delete");
+    print(id);
+    Map<String, String> headers = {"Authorization":"JWT $bvalue",
+          "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
+          print(headers);
+          final http.Response response = await http.delete(
+    'https://backend.scrapshut.com/api/post/$id',
+    headers:  headers,
+    
+    
+  );
+  
+  print("delete");
+
+  print(response.statusCode);
+ 
+  print(response.body);
+  
+  
+  return response;
+}
+deleteexp()
+{
+  setState(() {
+    expd = !expd;
+  });
+}
+
     //print(widget.pid);
   String c = widget.time.substring(0,10);
     
@@ -373,158 +422,224 @@ class _DisplayPState extends State<DisplayP> {
   AnimatedContainer(
     
 
-      height: isexp==true ?250 : 140,
-     
-      duration: Duration(milliseconds: 200),
+      height: isexp ? 420 : 250,
+     decoration: BoxDecoration(
+       border: Border.all(color: Colors.grey)
+     ),
+      duration: Duration(milliseconds: 50),
+      curve: Curves.easeIn,
       margin: EdgeInsets.all(8),
       
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 40,
-            color: Colors.grey[300],
-            
-            
-            child: Column(
-              children: <Widget>[
-                Text(""),
-                //Icon(Icons.arrow_upward,),
-                GestureDetector(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+                      children: [
+    AnimatedContainer(
+  
+                duration: Duration(milliseconds: 200) ,
+  
+                height: expd ? 80 : 60,
+  
+                color: Colors.grey[200],
+  
+              ),
+              widget.tags !=null ? Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                              child: SizedBox(
+                                height: 40,
+                              child: Container(
+                                  
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                     color: Colors.green,
+                                     borderRadius: BorderRadius.circular(10)
+
+                                  ),
+                 
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(widget.tags.toString().replaceAll("[", " ").replaceAll("]", " "),style: TextStyle(color: Colors.white),),
+                  )),
+                              ),
+              ) : Container(),
+              Positioned(
+                top:  expd ? 0 : 10,
+                bottom: 10,
+                right: 10,
+                child: GestureDetector(
+                  child: Icon(Icons.arrow_drop_down,color: Colors.blue,size: 30,),
                   onTap: (){
-                    print('Ok');
-                   
+                    deleteexp();
+                  },),
+              ),
+              Positioned(
+                top: 40,
+                bottom: 10,
+                right: 10,
+                child: expd? GestureDetector(
+                  onTap: (){
+                    delete(widget.pid);
                   },
                                   child: Container(
+                    
+                    height: 80,
+                    width: 80,
+                    color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:17,top: 8),
+                      child: Text("Delete",style: TextStyle(color: Colors.white),),
+                    ),
+                  ),
+                ) : Container() 
 
-                                      height:30,
-                                      width: 35,
-                                       decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/ok.png",)),
+              )
           
-        ),
-                                    ),
-                ),
-                SizedBox(height: 10,),
-                Text(widget.rate.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                SizedBox(height: 10,),
-                   GestureDetector(
-                     onTap: (){
-                       print("Stop");
-                      
-                     },
-                                        child: Container(
-                                      height:30,
-                                      width: 35,
-                                       decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
-          
-        ),
-                     ),
-                   ),
-              ],
-            ),
-            
+              
+],
           ),
-          SizedBox(width: 10,),
-          Container(
-           child: Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: <Widget>[
-               Row(
-                 children: <Widget>[
-                   //Icon(Icons.blur_circular,color: Colors.blue,),
-                   widget.tags.isNotEmpty ?  Text( "Tags: "+ widget.tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.black,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
-                   Text("Author ",style: TextStyle(color: Colors.grey,fontSize: 10),),
-                   Text(widget.author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
-                   Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
-                   
-                   
-              
-                  
-                   //Spacer(),
-                 ],
-               ),
-               SizedBox(height: 10,),
-               Text(widget.content,style: TextStyle(fontWeight: FontWeight.bold),),
-                  SizedBox(height: 10,),
-                 
-          
-               
-               Row(
-                 children: <Widget>[
-                  Text( widget.isMsg==true ? widget.url : widget.url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: widget.isMsg? 15 : 10 ),),
-                 widget.isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
-
-               ],),
-              
-            // Row(
-            //   children: <Widget>[
-            //     Text("aa"),
-                
-                
-
-            //   ],
-            // )
-            SizedBox(height: 5,),
-            AnimatedContainer(
-              
-              height: isexp == true? 160 : 60,
-              duration: Duration(milliseconds: 200),
-              width: MediaQuery.of(context).size.width * .80,
-              
-                              child:  widget.map!=null ? ExpansionTile(
-                  title: Row(
-                  children: <Widget>[
-                    Icon(Icons.message,color: Colors.grey,),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Text("Advertisement",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                    )
-                  ],
+          SizedBox(height: 15,),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(widget.url,style: TextStyle(color: Colors.blue,fontSize: 15),),
+          ),
+           SizedBox(height: 30,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+                Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: 40,
+              width: 120,
+              color: Colors.red,
+              child: Padding(
+                padding: const EdgeInsets.all(7.0),
+                child: Text("Advertisement",style: TextStyle(color: Colors.white),),
+              ),
+            ),
+          ),
+               Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: (){
+                onchange();
+              },
+                          child: Container(
+              height: 40,
+                width: 120,
+                color: Colors.blue,
+                child: Padding(
+                  padding: const EdgeInsets.all(7.0),
+                  child: Text("Show Reviews",style: TextStyle(color: Colors.white),),
                 ),
-                trailing: Container(height: 2,width: 2,),
-                onExpansionChanged: onchange,
-                children: <Widget>[
-                 widget.map!=null ?  Container(
-                   alignment: Alignment.topLeft,
-                  
-                   child: Column(
-                                 //mainAxisAlignment: MainAxisAlignment.start,
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 
-                                 children: <Widget>[
-                                   Padding(
-                                     padding: const EdgeInsets.all(8.0),
-                                     child: widget.map["title"]!= null ?
-                                     Text("Title: " +widget.map["title"],style:TextStyle(fontWeight: FontWeight.bold),) : Container()
-                                   ),
-                                   Padding(
-                                     padding: const EdgeInsets.all(8.0),
-                                     child: widget.map["url"]!=null ?
-                                     Text("URL: "+widget.map["url"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
-                                   ),
-                                   Padding(
-                                     padding: const EdgeInsets.all(8.0),
-                                     child: widget.map["advertizing_content"]!=null ?
-                                     Text("Content: " +widget.map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
-                                   )
-                                 ],
-                               ),
-                 ) : Container()
+              ),
+            ),
+          ),
+            ],
+          ),
+          AnimatedContainer(
+            //color: Colors.deepOrange,
+            height: isexp? 200 : 10,
+            duration: Duration(milliseconds:50),
+            curve: Curves.easeIn,
+            child: isexp ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(widget.author,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text("Review: "+widget.content),
+                ),
+                 Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/ok.png")
+                          )
+                        ),
+                      ),
+                      SizedBox(width: 12,),
+                      Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/stop.png")
+                          )
+                        ),
+                      )
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          if(isedit)
+                          {
+                              print(_textEditingController.text);
+                            put(widget.pid, _textEditingController.text);
+                              _textEditingController.clear();
+                              edit();
+                          //put(widget.pid,_textEditingController.text); 
+                          }
+                          else
+                          {
+                            edit();
+                          }
+                          
+                        },
+                          child: Container(
 
-                ],
+                          width: 60,
+                          decoration: BoxDecoration(
+                            border: Border.all()
+                          ),
+                          child: isedit ? Text("Submit",textAlign: TextAlign.center) :
+                          Text("EDIT",textAlign: TextAlign.center,),
+                        ),
+                      )
+                     
+                    ],
+                  ),
+                ),
+                isedit ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: 40,
+                   
+                    child: TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+		borderRadius: BorderRadius.all(Radius.circular(0)),
+		borderSide: BorderSide(color: Colors.black, width: 1),
+	   ),
+	  focusedBorder: OutlineInputBorder(
+		borderRadius: BorderRadius.all(Radius.circular(0)),
+		borderSide: BorderSide(color: Colors.black, width: 1),
+	  ),
+                        hintText: "Edit your review"
+                      ),
+                    ),
+                  ),
                 ) : Container()
-                
+              ],
             )
-              
-
-             ],
-             
-
-            )
-          )
+             : Container()
+          ),
+         
         ],
-      ),
+      )
     );
 
 

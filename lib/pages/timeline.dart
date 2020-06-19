@@ -254,50 +254,51 @@ class _TimeLineState extends State<TimeLine>  with SingleTickerProviderStateMixi
         },
       ),
 
-     isFetchingmsg == true ? Center(child: CircularProgressIndicator(),) :
-      ListView.builder(
-        itemCount:   (presentmsg <= _msgresults.length) ? msgitems.length + 1 : msgitems.length,
-        itemBuilder: (context,index){
+//      isFetchingmsg == true ? Center(child: CircularProgressIndicator(),) :
+//       ListView.builder(
+//         itemCount:   (presentmsg <= _msgresults.length) ? msgitems.length + 1 : msgitems.length,
+//         itemBuilder: (context,index){
           
-          return (index == msgitems.length ) ?
-          //for load more button
-        Container(
-            color: Colors.greenAccent,
-            child: FlatButton(
-                child: Text("Load More"),
-                onPressed: () {
-                  setState(() {
-    if((presentmsg + perPagemsg)> _msgresults.length) {
-        msgitems.addAll(
-            _msgresults.getRange(presentmsg, _msgresults.length));
-    } else {
-        msgitems.addAll(
-            _msgresults.getRange(presentmsg, presentmsg + perPagemsg));
-    }
-    presentmsg = presentmsg + perPagemsg;
-});
+//           return (index == msgitems.length ) ?
+//           //for load more button
+//         Container(
+//             color: Colors.greenAccent,
+//             child: FlatButton(
+//                 child: Text("Load More"),
+//                 onPressed: () {
+//                   setState(() {
+//     if((presentmsg + perPagemsg)> _msgresults.length) {
+//         msgitems.addAll(
+//             _msgresults.getRange(presentmsg, _msgresults.length));
+//     } else {
+//         msgitems.addAll(
+//             _msgresults.getRange(presentmsg, presentmsg + perPagemsg));
+//     }
+//     presentmsg = presentmsg + perPagemsg;
+// });
 
-                },
-            ),
-        ) :
+//                 },
+//             ),
+//         ) :
          
-         Display(
-           rate: _msgresults[index]["rate"] ?? 0,
-           author: _msgresults[index]['author'] ?? "null",
-           content: _msgresults[index]['content'] ?? "null",
-           isMsg: true,
-           index: index,
-           map: null,
-           tags: _msgresults[index]['tags'] ,
-           time: _msgresults[index]["created_at"] ,
-           url: _msgresults[index]['review'] ?? "12345678910",
-           pid: _msgresults[index]["id"],
-           uid: int.parse(uid),
-         );
-        },
-      ),
+//          Display(
+//            rate: _msgresults[index]["rate"] ?? 0,
+//            author: _msgresults[index]['author'] ?? "null",
+//            content: _msgresults[index]['content'] ?? "null",
+//            isMsg: true,
+//            index: index,
+//            map: null,
+//            tags: _msgresults[index]['tags'] ,
+//            time: _msgresults[index]["created_at"] ,
+//            url: _msgresults[index]['review'] ?? "12345678910",
+//            pid: _msgresults[index]["id"],
+//            uid: int.parse(uid),
+//          );
+//         },
+//       ),
+Center(child: Text("It will be available soon"),),
      //get the images detais from images file in widgets
-      Images(),
+  Center(child: Text("It will be available soon"),),
         ],
         
       )
@@ -339,6 +340,7 @@ class _DisplayState extends State<Display> {
   Map<String,dynamic> res = Map();
   Map<String,dynamic> resd = Map();
   int coun =0;
+  bool isadv = false;
   makeupvote(int uid,int pid) async
   {
     Map<String, String> headers = {"API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
@@ -369,10 +371,19 @@ class _DisplayState extends State<Display> {
   @override
   Widget build(BuildContext context) {
    
-    onchange(bool val)
+    onchange()
     {
       setState(() {
         isexp = !isexp;
+      });
+      print(isexp.toString() +  " " + widget.index.toString());
+      print(widget.map);
+    }
+     onchangeadv()
+    {
+      setState(() {
+        isexp = !isexp;
+        isadv = !isadv;
       });
       print(isexp.toString() +  " " + widget.index.toString());
       print(widget.map);
@@ -402,163 +413,190 @@ class _DisplayState extends State<Display> {
       ),
     )
     :
+  
   AnimatedContainer(
     
 
-      height: isexp==true ?250 : 140,
-     
-      duration: Duration(milliseconds: 200),
+      height: isexp ? 435 : 280,
+     decoration: BoxDecoration(
+       border: Border.all(color: Colors.grey)
+     ),
+      duration: Duration(milliseconds:  50),
+       
       margin: EdgeInsets.all(8),
       
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 40,
-            color: Colors.grey[300],
-            
-            
-            child: Column(
-              children: <Widget>[
-                Text(""),
-                //Icon(Icons.arrow_upward,),
-                GestureDetector(
-                  onTap: (){
-                    print('Ok');
-                    makeupvote(widget.uid, widget.pid);
-                  },
-                                  child: Container(
-
-                                      height:30,
-                                      width: 35,
-                                       decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/ok.png",)),
-          
-        ),
-                                    ),
-                ),
-                SizedBox(height: 10,),
-                Text(coun.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                SizedBox(height: 10,),
-                   GestureDetector(
-                     onTap: (){
-                       print("Stop");
-                       makedownvote(widget.uid, widget.pid);
-                     },
-                                        child: Container(
-                                      height:30,
-                                      width: 35,
-                                       decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/stop.png",)),
-          
-        ),
-                     ),
-                   ),
-              ],
-            ),
-            
-          ),
-          SizedBox(width: 10,),
-          Container(
-           child: Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: <Widget>[
-               Row(
-                 children: <Widget>[
-                   //Icon(Icons.blur_circular,color: Colors.blue,),
-                   widget.tags.isNotEmpty ?  Text( "Tags: "+ widget.tags.toString().replaceAll("[", " ").replaceAll("]", " " ),style: TextStyle(color: Colors.black,fontSize: 10 )): Text("No tags ",style: TextStyle(color: Colors.grey,fontSize: 10 )),
-                   Text("Author ",style: TextStyle(color: Colors.grey,fontSize: 10),),
-                   Text(widget.author + " ",style: TextStyle(color: Colors.grey,fontSize: 10)),
-                   Text( "on " + c ,style: TextStyle(color: Colors.grey,fontSize: 7)),
-                   
-                   
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+                      children: [
+   
+  Container(
+    height: 70,
+    width: MediaQuery.of(context).size.width,
+    color: Colors.grey[200],
+  ),
               
-                  
-                   //Spacer(),
-                 ],
-               ),
-               SizedBox(height: 10,),
-               Text(widget.content,style: TextStyle(fontWeight: FontWeight.bold),),
-                  SizedBox(height: 10,),
+              widget.tags !=null ? Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                              child: SizedBox(
+                                height: 40,
+                                                              child: Container(
+                                  
+                                  
+                                  decoration: BoxDecoration(
+                                     color: Colors.green,
+                                     borderRadius: BorderRadius.circular(10)
+
+                                  ),
                  
-          
-               
-               Row(
-                 children: <Widget>[
-                  Text( widget.isMsg==true ? widget.url : widget.url.substring(0,10),style: TextStyle(color: Colors.blue,fontSize: widget.isMsg? 15 : 10 ),),
-                 widget.isMsg==true? Text(" ") : Icon(Icons.call_made,color: Colors.blue,size: 10,)
-
-               ],),
-              
-            // Row(
-            //   children: <Widget>[
-            //     Text("aa"),
-                
-                
-
-            //   ],
-            // )
-            SizedBox(height: 5,),
-            AnimatedContainer(
-              
-              height: isexp == true? 160 : 60,
-              duration: Duration(milliseconds: 200),
-              width: MediaQuery.of(context).size.width * .80,
-              
-                              child: widget.map!=null ? ExpansionTile(
-                  title: Row(
-                  children: <Widget>[
-                    Icon(Icons.message,color: Colors.grey,),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Text("Advertisement",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),),
-                    )
-                  ],
-                ),
-                trailing: Container(height: 2,width: 2,),
-                onExpansionChanged: onchange,
-                children: <Widget>[
-                 widget.map!=null ?  Container(
-                   alignment: Alignment.topLeft,
-                  
-                   child: Column(
-                                 //mainAxisAlignment: MainAxisAlignment.start,
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 
-                                 children: <Widget>[
-                                   Padding(
-                                     padding: const EdgeInsets.all(8.0),
-                                     child: widget.map["title"]!= null ?
-                                     Text("Title: " +widget.map["title"],style:TextStyle(fontWeight: FontWeight.bold),) : Container()
-                                   ),
-                                   Padding(
-                                     padding: const EdgeInsets.all(8.0),
-                                     child: widget.map["url"]!=null ?
-                                     Text("URL: "+widget.map["url"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
-                                   ),
-                                   Padding(
-                                     padding: const EdgeInsets.all(8.0),
-                                     child: widget.map["advertizing_content"]!=null ?
-                                     Text("Content: " +widget.map["advertizing_content"],style:TextStyle(fontWeight: FontWeight.bold)) : Container(),
-                                   )
-                                 ],
-                               ),
-                 ) : Container()
-
-                ],
-                ) : Container()
-                
-            )
-              
-
-             ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(widget.tags.toString().replaceAll("[", " ").replaceAll("]", " "),style: TextStyle(color: Colors.white),),
+                  )),
+                              ),
+              ) : Container(),
              
+          
+              
+],
+          ),
+          SizedBox(height: 15,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                              child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(widget.url,style: TextStyle(color: Colors.blue,fontSize: 15),),
+                ),
+              ),
+               Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Row(
+                   children: [
 
+                     Text(coun.toString(),style: TextStyle(color: Colors.red),),
+                     Icon(Icons.star,color: Colors.red,)
+                   ],
+                 ),
+               )
+
+            ],
+           
+          ),
+           SizedBox(height: 30,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+                Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: GestureDetector(
+              onTap: (){
+                onchangeadv();
+              },
+                          child: widget.map!=null && (widget.map["advertizing_content"]!=null && widget.map["title"]!=null && widget.map["url"]!=null) ?
+                          Container(
+                height: 40,
+                width: 120,
+                color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.all(7.0),
+                  child: 
+                  Text("Advertisement",style: TextStyle(color: Colors.white),) 
+                ),
+              ) : Container()
+            ),
+          ),
+               Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: (){
+                onchange();
+              },
+                          child: Container(
+              height: 40,
+                width: 120,
+                color: Colors.blue,
+                child: Padding(
+                  padding: const EdgeInsets.all(7.0),
+                  child: Text("Show Reviews",style: TextStyle(color: Colors.white),),
+                ),
+              ),
+            ),
+          ),
+            ],
+          ),
+          AnimatedContainer(
+            //color: Colors.deepOrange,
+            height: isexp? 200 : 10,
+            duration: Duration(milliseconds: 50),
+             
+            child: isexp ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: isadv ? 
+                  Text("Title: " + widget.map["title"]) :
+                  Text(widget.author,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: isadv ?  Text("URL: "+ widget.map["url"]) :
+                   Text("Review: "+widget.content),
+                ),
+                 Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: 
+                  isadv ? Text("Content: " + widget.map["advertizing_content"]) :
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: (){makeupvote(widget.uid, widget.pid);},
+                                                      child: Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/ok.png")
+                            )
+                        ),
+                      ),
+                          ),
+                      SizedBox(width: 12,),
+                      GestureDetector(
+                        onTap: (){
+                          makedownvote(widget.uid,widget.pid);
+                        },
+                                              child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/stop.png")
+                            )
+                          ),
+                        ),
+                      )
+                        ],
+                      ),
+                   
+                     
+                    ],
+                  ),
+                ),
+              ],
             )
-          )
+             : Container()
+          ),
+         
         ],
-      ),
+      )
     );
-
 
     
   }

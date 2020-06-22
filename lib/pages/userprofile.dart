@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:sssocial/widgets/imageprof.dart';
 
 class UserProfile extends StatefulWidget {
+   method() => createState().initState();
   @override
   _UserProfileState createState() => _UserProfileState();
 }
@@ -317,7 +318,7 @@ class DisplayP extends StatefulWidget {
   final String author;
   final String url;
   final String time;
-  final String content;
+   String content;
   final List tags;
   final bool isMsg;
   final int index;
@@ -345,6 +346,8 @@ class _DisplayPState extends State<DisplayP> {
   }
   @override
   Widget build(BuildContext context) {
+    String review;
+    bool ischange = false;
    
     onchange()
     {
@@ -361,7 +364,7 @@ class _DisplayPState extends State<DisplayP> {
         isedit = !isedit;
       });
     }
-    put(int id,String text) async
+    put(int id,String text,String title,String content,String url,int rate,List tags,) async
     {
       print("in put");
 
@@ -370,19 +373,39 @@ class _DisplayPState extends State<DisplayP> {
         String bvalue = await Methods.storage.read(key: 'btoken');
         print(bvalue);
          String json = jsonEncode({
+           "title" : title,
+           "rate" : rate,
+           "content" : content,
+           "url" : url,
+           
 			
-            "review": text
+            "review": text,
+            "tags" : tags,
+            "advertisement" : {
+              "title": " ",
+              "url" : " ",
+              "advertizing_content" : " "
+            },
          });
       Map<String, String> headers = {"Authorization":"JWT $bvalue",
           "Content-Type":"application/json","API-KEY": "LrUyJbg2.hbzsN46K8ghSgF8LkhxgybbDnGqqYhKM"};
               final http.Response response = await http.put(
-    'https://backend.scrapshut.com/api/post/$id',
+    'https://backend.scrapshut.com/api/post/$id/',
     headers:  headers,
     body: json,
     
   );
   print(response.statusCode);
-print(response.body);
+//print(response.body);
+Map<String,dynamic> map = new Map<String,dynamic>();
+map = jsonDecode(response.body);
+print(map);
+setState(() {
+  widget.content = map["review"];
+});
+print(widget.content);
+
+
     }
   Future<http.Response> delete(int id) async {
      String bvalue = await Methods.storage.read(key: 'btoken');
@@ -587,9 +610,13 @@ deleteexp()
                           if(isedit)
                           {
                               print(_textEditingController.text);
-                            put(widget.pid, _textEditingController.text);
+                            
+                            put(widget.pid, _textEditingController.text,"title",widget.content,widget.url,widget.rate,widget.tags);
                               _textEditingController.clear();
+                              
                               edit();
+                              print("aa");
+                             
                           //put(widget.pid,_textEditingController.text); 
                           }
                           else
